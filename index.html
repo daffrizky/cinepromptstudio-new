@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CinePrompt AI Studio — Pembuat Prompt Video AI</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            studio: {
+              950: '#04060c',
+              900: '#090d18',
+              850: '#0e1322',
+              800: '#151b2e',
+              700: '#222942',
+              600: '#323c5e'
+            },
+            neon: {
+              amber: '#f59e0b',
+              indigo: '#6366f1',
+              violet: '#a855f7',
+              cyan: '#06b6d4',
+              emerald: '#10b981',
+              rose: '#f43f5e'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 50% -10%, #171f3d 0%, #080c18 45%, #04060c 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(9, 13, 24, 0.7);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.45);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(168, 85, 247, 0.75);
+    }
+    .glass-panel {
+      background: rgba(14, 19, 34, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    }
+    .glass-panel-glow {
+      background: rgba(14, 19, 34, 0.9);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(99, 102, 241, 0.38);
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+    .chip-active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(168, 85, 247, 0.35)) !important;
+      border-color: #818cf8 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.35);
+    }
+    .active-nav-tab {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff !important;
+      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4);
+    }
+    .grid-bg-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-ring 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Cinema Header -->
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-studio-950/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand Logo & Identity -->
+      <div class="flex items-center gap-3">
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-gradient-to-r from-amber-500 via-indigo-500 to-purple-600 rounded-2xl blur-sm opacity-70 group-hover:opacity-100 transition duration-300"></div>
+          <div class="relative w-10 h-10 rounded-xl bg-studio-900 border border-white/20 flex items-center justify-center text-white shadow-xl">
+            <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+              CinePrompt <span class="text-amber-400">AI</span> Studio
+            </h1>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-purple-500/20 text-amber-300 border border-amber-500/30">
+              Director Pro v5.0
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 hidden sm:block">AI Film Suite: Instant Prompt, Visual Concept Render, TTS Voice, 5-Shot Coverage & Lighting Rig</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Menu -->
+      <nav class="flex items-center flex-wrap gap-1 bg-studio-900/90 p-1 rounded-2xl border border-slate-800">
+        <button id="nav-instant" type="button" class="nav-tab active-nav-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5">
+          <span>⚡ 1-Klik Instan</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] bg-white/20 text-white font-bold uppercase">Akurat</span>
+        </button>
+        <button id="nav-builder" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>⚙️ Builder Studio</span>
+        </button>
+        <button id="nav-character" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>👤 Karakter DNA</span>
+          <span id="badge-character-count" class="px-1.5 py-0.2 rounded-full text-[10px] bg-purple-500/30 text-purple-200">2</span>
+        </button>
+        <button id="nav-remix" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>🖼️ Remix Foto</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] bg-pink-500/20 text-pink-300">Pose & Latar</span>
+        </button>
+        <button id="nav-lighting" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>💡 Studio Lighting</span>
+          <span class="px-1.5 py-0.2 rounded-full text-[9px] bg-amber-500/20 text-amber-300">3-Point</span>
+        </button>
+        <button id="nav-presets" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>🗂️ Preset</span>
+        </button>
+        <button id="nav-storyboard" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>🎞️ Storyboard</span>
+          <span id="badge-storyboard-count" class="px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-500/30 text-indigo-200">0</span>
+        </button>
+        <button id="nav-saved" type="button" class="nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5">
+          <span>💾 Koleksi</span>
+          <span id="badge-saved-count" class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-800 text-slate-300">1</span>
+        </button>
+      </nav>
+
+      <!-- Action Buttons: API Key & Audio FX -->
+      <div class="flex items-center gap-2">
+        <button id="btn-api-settings" type="button" title="Pengaturan Gemini API Key" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-indigo-500/20 to-purple-500/20 hover:from-amber-500/30 hover:to-indigo-500/30 border border-amber-500/40 text-xs text-amber-200 font-semibold transition flex items-center gap-2 shadow-sm">
+          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+          <span>🔑 API Key</span>
+        </button>
+
+        <button id="btn-sound-toggle" type="button" title="Aktif/Nonaktif Suara Antarmuka" class="px-2.5 py-1.5 rounded-xl bg-studio-900 border border-slate-800 hover:border-slate-700 text-xs text-slate-400 hover:text-white transition flex items-center gap-1.5">
+          <span id="sound-icon">🔊</span>
+          <span class="text-[11px] font-medium hidden lg:inline">Audio FX</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- ==================== VIEW 0: 1-KLIK INSTAN ==================== -->
+    <section id="view-instant" class="space-y-6">
+      
+      <!-- Hero Banner -->
+      <div class="glass-panel-glow rounded-3xl p-6 sm:p-7 relative overflow-hidden grid-bg-pattern">
+        <div class="absolute -right-10 -bottom-10 w-80 h-80 bg-gradient-to-br from-amber-500/15 via-indigo-600/15 to-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 relative z-10">
+          <div class="space-y-2 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span>⚡ AI Director Engine — 100% Akurat</span>
+              </span>
+              <span class="text-xs text-indigo-300 font-mono">Zero-Effort • Instan Siap Pakai</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
+              Tulis Ide Bebas 1 Kalimat &rarr; Prompt Sinematik Master Siap Pakai
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Ketik santai dalam Bahasa Indonesia atau Inggris. Sistem cerdas otomatis membedah anatomi subjek, arahan lensa, pergerakan kamera, rasio aspek, dan fisika visual sesuai standar platform AI pilihan Anda.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap lg:flex-col items-start lg:items-end gap-2 shrink-0">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-studio-900/90 border border-slate-700/80 text-xs text-slate-300">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="instant-status-engine" class="font-medium text-white">Gemini Multimodal Suite Siap</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-mono">Optimal untuk Kling, Veo, Sora, Runway, Midjourney & Flux</span>
+          </div>
+        </div>
+      </div>
+      <!-- Instant Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Input Controls -->
+        <div class="lg:col-span-6 space-y-4">
+          <div class="glass-panel rounded-3xl p-5 sm:p-6 space-y-4">
+            
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label for="instant-user-input" class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-lg bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-[10px]">1</span>
+                  <span>Tulis Ide Anda (Bahasa Indonesia / Inggris)</span>
+                </label>
+                <span class="text-[11px] text-amber-300">Ketik bebas atau pilih contoh 👇</span>
+              </div>
+              <textarea id="instant-user-input" rows="4" placeholder="Contoh: Host podcast wanita berbicara santai sambil tersenyum di studio modern estetik dengan pencahayaan neon ungu hangat, mic siaran mewah..." class="w-full px-4 py-3 rounded-2xl bg-studio-950/90 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition custom-scrollbar"></textarea>
+            </div>
+
+            <!-- Quick Template Ideas Chips -->
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400 block mb-2">⚡ Rekomendasi Ide Cepat 1-Klik:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" class="instant-quick-chip px-3 py-1.5 rounded-xl text-xs bg-studio-900/90 border border-slate-800 text-slate-300 hover:border-amber-400 hover:text-white transition" data-idea="Host wanita muda sedang rekaman podcast di studio estetik, memegang mic siaran, tersenyum ramah ke arah kamera, cahaya neon hangat sinematik">🎙️ Podcast Studio</button>
+                <button type="button" class="instant-quick-chip px-3 py-1.5 rounded-xl text-xs bg-studio-900/90 border border-slate-800 text-slate-300 hover:border-amber-400 hover:text-white transition" data-idea="Mobil sport merah klasik melaju kencang di jalanan pegunungan pesisir laut saat senja golden hour, sinematik film 8k">🏎️ Mobil Sport Senja</button>
+                <button type="button" class="instant-quick-chip px-3 py-1.5 rounded-xl text-xs bg-studio-900/90 border border-slate-800 text-slate-300 hover:border-amber-400 hover:text-white transition" data-idea="Barista menuangkan susu steamed ke cangkir kopi espresso membuat latte art bunga yang indah, uap hangat mengepul, macro close-up">☕ Latte Art B-Roll</button>
+                <button type="button" class="instant-quick-chip px-3 py-1.5 rounded-xl text-xs bg-studio-900/90 border border-slate-800 text-slate-300 hover:border-amber-400 hover:text-white transition" data-idea="Seorang pendekar cyberpunk berjaket reflektif berdiri di tengah jalanan Tokyo malam hari basah oleh hujan, papan neon hologram memantul di genangan air">🤖 Cyberpunk Neon</button>
+                <button type="button" class="instant-quick-chip px-3 py-1.5 rounded-xl text-xs bg-studio-900/90 border border-slate-800 text-slate-300 hover:border-amber-400 hover:text-white transition" data-idea="Botol serum kecantikan kaca kristal di atas batu hitam basah dengan percikan air segar dan pencahayaan studio mewah">💎 Iklan Produk Mewah</button>
+              </div>
+            </div>
+
+            <!-- Parameters Grid: Engine, Aspect Ratio, Mood & Photo -->
+            <div class="space-y-3 pt-3 border-t border-slate-800/80">
+              
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">2. Target Platform Video / Image AI</label>
+                <div id="instant-target-chips" class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                  <button type="button" data-inst-target="kling" class="inst-target-btn chip-active py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition">Kling AI 1.6</button>
+                  <button type="button" data-inst-target="veo" class="inst-target-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition hover:border-slate-500">Google Veo</button>
+                  <button type="button" data-inst-target="sora" class="inst-target-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition hover:border-slate-500">OpenAI Sora</button>
+                  <button type="button" data-inst-target="runway" class="inst-target-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition hover:border-slate-500">Runway Gen-3</button>
+                  <button type="button" data-inst-target="midjourney" class="inst-target-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition hover:border-slate-500">Midjourney</button>
+                  <button type="button" data-inst-target="flux" class="inst-target-btn py-2 px-2 rounded-xl text-xs font-medium border border-slate-700 bg-studio-900 text-center transition hover:border-slate-500">Flux / Recraft</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label for="instant-select-ar" class="block text-xs font-semibold text-slate-400 mb-1">Rasio Layar</label>
+                  <select id="instant-select-ar" class="w-full px-3.5 py-2.5 rounded-xl bg-studio-900 border border-slate-700 text-xs text-white">
+                    <option value="16:9" selected>📺 16:9 Lanskap (YouTube & Film)</option>
+                    <option value="9:16">📱 9:16 Vertikal (TikTok, Reels, Shorts)</option>
+                    <option value="21:9">🎬 21:9 Ultrawide Cinema</option>
+                    <option value="1:1">⏹️ 1:1 Persegi (Feed)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="instant-select-mood" class="block text-xs font-semibold text-slate-400 mb-1">Nuansa & Gaya Visual</label>
+                  <select id="instant-select-mood" class="w-full px-3.5 py-2.5 rounded-xl bg-studio-900 border border-slate-700 text-xs text-white">
+                    <option value="cinematic hyper-realistic 8k" selected>🎥 Sinematik 8K Fotorealistik</option>
+                    <option value="luxury commercial advertising">💎 Iklan Komersial Mewah</option>
+                    <option value="warm cozy documentary">☕ Dokumenter Hangat</option>
+                    <option value="vibrant anime feature film">🌸 Anime Sinematik (Makoto Shinkai)</option>
+                    <option value="gritty cyberpunk neon sci-fi">🔮 Cyberpunk Neon Sci-Fi</option>
+                    <option value="dark fantasy moody dramatic">🌑 Dark Fantasy Dramatis</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Photo Reference Attachment -->
+              <div class="pt-1">
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-xs font-semibold text-slate-300">Lampirkan Foto Referensi (Opsional)</span>
+                  <span class="text-[11px] text-indigo-400">Analisis visual & pencahayaan otomatis</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <label for="instant-photo-file" class="cursor-pointer px-3.5 py-2.5 rounded-xl bg-studio-900 hover:bg-studio-850 border border-dashed border-slate-700 hover:border-amber-400 text-xs text-slate-300 flex items-center gap-2 transition">
+                    <input id="instant-photo-file" type="file" accept="image/*" class="hidden" />
+                    <span>📸 Unggah Foto Acuan</span>
+                  </label>
+                  <div id="instant-photo-preview-wrap" class="hidden flex items-center gap-2 bg-studio-900 px-3 py-1.5 rounded-xl border border-slate-800">
+                    <img id="instant-photo-thumb" src="" alt="Thumbnail" class="w-8 h-8 object-cover rounded-lg border border-slate-700" />
+                    <span id="instant-photo-name" class="text-xs text-amber-200 truncate max-w-[140px]">foto.jpg</span>
+                    <button type="button" id="btn-remove-instant-photo" class="text-slate-400 hover:text-rose-400 text-xs font-bold px-1" title="Hapus foto">✕</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Big Generate Action Button -->
+            <button id="btn-generate-instant" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-indigo-600 to-purple-600 hover:from-amber-400 hover:via-indigo-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-2xl shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 group">
+              <span id="btn-instant-spinner" class="hidden animate-spin text-lg">⏳</span>
+              <span id="btn-instant-text">✨ Racik Prompt 100% Akurat Sekarang</span>
+              <span class="group-hover:translate-x-1 transition duration-200">&rarr;</span>
+            </button>
+
+          </div>
+        </div>
+        <!-- Right: Master Prompt Output & Visual Breakdown -->
+        <div class="lg:col-span-6 space-y-4">
+          <div class="glass-panel-glow rounded-3xl p-5 sm:p-6 space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                <h3 class="text-sm font-bold text-white tracking-wide">Hasil Prompt Master AI Siap Pakai</h3>
+                <span id="instant-badge-engine" class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30">KLING AI</span>
+              </div>
+              <span id="instant-word-count" class="text-xs font-mono text-slate-400">0 kata</span>
+            </div>
+
+            <!-- Master Prompt Textarea -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-300">Master Prompt (English — Optimal AI Engine):</span>
+                <button type="button" id="btn-copy-instant-main" class="text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1.5 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <span>Salin Prompt</span>
+                </button>
+              </div>
+              <textarea id="instant-output-prompt" rows="5" class="w-full p-4 rounded-2xl bg-studio-950 border border-slate-700/80 text-xs sm:text-sm text-indigo-100 font-mono leading-relaxed focus:outline-none focus:border-amber-400 custom-scrollbar select-all" placeholder="Prompt master sinematik siap pakai akan muncul di sini secara otomatis..."></textarea>
+            </div>
+
+            <!-- Concept Art Visual Preview Box (Direct Image Render Feature!) -->
+            <div class="bg-studio-950 border border-indigo-500/30 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">🎨</span>
+                  <span class="text-xs font-bold text-white">Visual Concept Render (AI Keyframe Preview)</span>
+                  <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">Gemini Image</span>
+                </div>
+                <button id="btn-render-concept-art" type="button" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-xs font-bold text-white transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/30">
+                  <span id="concept-art-spinner" class="hidden animate-spin">⏳</span>
+                  <span id="concept-art-btn-text">🖼️ Render Visual Frame</span>
+                </button>
+              </div>
+
+              <div id="concept-art-preview-container" class="relative w-full aspect-video rounded-xl bg-studio-900 border border-slate-800 flex items-center justify-center overflow-hidden">
+                <div id="concept-art-placeholder" class="text-center p-4 space-y-1.5 text-slate-500">
+                  <svg class="w-8 h-8 mx-auto text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <div class="text-xs text-slate-400">Klik "Render Visual Frame" untuk melihat wujud visual nyata dari prompt ini</div>
+                  <div class="text-[10px] text-slate-600">Dihasilkan oleh model generative image AI</div>
+                </div>
+                <img id="concept-art-result-img" src="" alt="AI Concept Preview" class="hidden w-full h-full object-cover rounded-xl" />
+                <a id="btn-download-concept-art" href="#" download="cineprompt-concept-art.png" class="hidden absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-studio-950/85 hover:bg-studio-900 text-xs font-bold text-white border border-slate-700 backdrop-blur-md transition flex items-center gap-1.5">
+                  <span>⬇️ Unduh Gambar</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Visual Breakdown Tags -->
+            <div class="bg-studio-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold text-slate-400 uppercase tracking-wider">Bedah Parameter Sinematografi:</span>
+                <span class="text-emerald-400 font-mono">100% Terstruktur</span>
+              </div>
+              <div id="instant-tag-breakdown" class="flex flex-wrap gap-1.5 text-[11px]">
+                <span class="px-2.5 py-1 rounded-lg bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">🎥 Lensa: 35mm Anamorphic</span>
+                <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/25">🎬 Framing: Medium Shot</span>
+                <span class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/25">💡 Pencahayaan: Volumetric Warm</span>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">⏱️ FPS: 24fps Real-Time</span>
+              </div>
+            </div>
+
+            <!-- Indonesian Meaning & Guide -->
+            <div class="bg-studio-900/70 p-3.5 rounded-2xl border border-slate-800 space-y-1">
+              <div class="text-[11px] font-semibold text-slate-400">Terjemahan & Panduan Adegan:</div>
+              <p id="instant-output-id" class="text-xs text-slate-300 leading-relaxed italic">
+                Ketik ide Anda di sebelah kiri lalu klik "Racik Prompt" untuk menghasilkan prompt master dan panduan terjemahannya di sini.
+              </p>
+            </div>
+
+            <!-- Negative Prompt & Settings Spec -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div class="bg-studio-950/90 p-3 rounded-2xl border border-slate-800 space-y-1">
+                <div class="text-[10px] uppercase font-bold text-rose-300 flex items-center justify-between">
+                  <span>Negative Prompt Teruji:</span>
+                  <button type="button" id="btn-copy-instant-neg" class="text-slate-400 hover:text-white underline">Salin</button>
+                </div>
+                <p id="instant-neg-text" class="text-[11px] font-mono text-slate-400 line-clamp-2">
+                  blurry, morphing, distorted face, extra limbs, bad anatomy, text, watermark, flickering, low resolution
+                </p>
+              </div>
+
+              <div class="bg-studio-950/90 p-3 rounded-2xl border border-slate-800 space-y-1">
+                <div class="text-[10px] uppercase font-bold text-amber-300">Rekomendasi Setelan:</div>
+                <div id="instant-rec-specs" class="text-[11px] font-mono text-slate-300 leading-snug">
+                  Rasio: 16:9 • FPS: 24 • Durasi: 5s • Motion: Smooth
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Transfer & Save Actions -->
+            <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-800">
+              <button id="btn-instant-to-builder" type="button" class="py-2.5 px-3 rounded-xl bg-studio-800 hover:bg-studio-700 text-xs font-semibold text-indigo-200 border border-slate-700 transition flex items-center justify-center gap-1.5">
+                <span>⚙️ Edit Detail di Builder &rarr;</span>
+              </button>
+              <button id="btn-instant-save" type="button" class="py-2.5 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-xs font-semibold text-emerald-300 border border-emerald-500/30 transition flex items-center justify-center gap-1.5">
+                <span>💾 Simpan Prompt Ini</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+    <!-- ==================== VIEW 1: ADVANCED PROMPT BUILDER ==================== -->
+    <section id="view-builder" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Left Column: Controls (7 cols) -->
+      <div class="lg:col-span-7 space-y-5">
+        
+        <!-- Step 1: Model Selection & Mode -->
+        <div class="glass-panel rounded-3xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center">1</span>
+              <h2 class="text-sm sm:text-base font-bold text-white">Target Model AI & Mode Generasi</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-surprise-me" type="button" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-pink-500/20 hover:from-amber-500/30 hover:to-pink-500/30 text-amber-200 border border-amber-500/30 transition flex items-center gap-1.5">
+                🎲 Ide Acak
+              </button>
+              <button id="btn-reset-all" type="button" class="text-xs font-medium px-2.5 py-1.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-slate-300 border border-slate-700 transition">
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div id="model-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" data-model="universal" class="model-btn chip-active px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition">
+              <div class="text-xs font-bold text-white">Universal</div>
+              <div class="text-[10px] text-slate-400">Semua generator</div>
+            </button>
+            <button type="button" data-model="veo" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Google Veo</div>
+              <div class="text-[10px] text-slate-400">Sinematik & Fisika</div>
+            </button>
+            <button type="button" data-model="sora" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">OpenAI Sora</div>
+              <div class="text-[10px] text-slate-400">Naratif Realistis</div>
+            </button>
+            <button type="button" data-model="runway" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Runway Gen-3</div>
+              <div class="text-[10px] text-slate-400">[Kamera]: [Adegan]</div>
+            </button>
+            <button type="button" data-model="kling" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Kling AI 1.6</div>
+              <div class="text-[10px] text-slate-400">Aksi & Presisi</div>
+            </button>
+            <button type="button" data-model="luma" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Luma Dream</div>
+              <div class="text-[10px] text-slate-400">Dinamis & Alur</div>
+            </button>
+            <button type="button" data-model="pika" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Pika Labs</div>
+              <div class="text-[10px] text-slate-400">Parameter Flag</div>
+            </button>
+            <button type="button" data-model="hailuo" class="model-btn px-3 py-2.5 rounded-2xl border border-slate-700 bg-studio-900/80 text-left transition hover:border-slate-500">
+              <div class="text-xs font-bold text-white">Hailuo MiniMax</div>
+              <div class="text-[10px] text-slate-400">Mimik Wajah Hidup</div>
+            </button>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-800">
+            <div id="model-tip-box" class="text-xs text-indigo-300 bg-indigo-950/40 border border-indigo-500/20 rounded-2xl px-3.5 py-2 flex-1">
+              <strong class="text-indigo-200">Tips Universal:</strong> Urutkan Subjek Utama &rarr; Aksi &rarr; Latar &rarr; Kamera &rarr; Pencahayaan.
+            </div>
+            <div class="flex items-center bg-studio-950 p-1 rounded-2xl border border-slate-800 shrink-0">
+              <button type="button" id="mode-t2v" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition">Text-to-Video</button>
+              <button type="button" id="mode-i2v" class="px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition">Image-to-Video</button>
+            </div>
+          </div>
+        </div>
+        <!-- Step 2: Subject & Motion -->
+        <div class="glass-panel rounded-3xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center">2</span>
+              <h2 class="text-sm sm:text-base font-bold text-white">Subjek Utama & Aksi Gerak</h2>
+            </div>
+            <span id="i2v-hint-badge" class="hidden text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Mode Image-to-Video Aktif</span>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label for="input-subject" class="block text-xs font-semibold text-slate-300 mb-1">Subjek Utama & Karakteristik Fisik</label>
+              <input id="input-subject" type="text" value="Seorang astronot wanita mengenakan helm kaca reflektif dengan pantulan nebula" class="w-full px-4 py-2.5 rounded-2xl bg-studio-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500 transition" />
+            </div>
+
+            <div>
+              <label for="input-action" class="block text-xs font-semibold text-slate-300 mb-1">Aksi / Gerakan Utama Subjek</label>
+              <input id="input-action" type="text" value="berjalan perlahan menembus badai pasir sambil menoleh ke arah kamera" class="w-full px-4 py-2.5 rounded-2xl bg-studio-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500 transition" />
+            </div>
+          </div>
+
+          <!-- Micro-motion chips -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-2">Detail Gerakan Mikro & Fisika Visual:</label>
+            <div id="motion-chips" class="flex flex-wrap gap-1.5">
+              <button type="button" data-en="hair and clothes gently blowing in the wind" data-id="rambut dan pakaian berkibar lembut tertiup angin" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">🌬️ Tertiup Angin</button>
+              <button type="button" data-en="looking directly into the camera lens with subtle emotional expression" data-id="menatap langsung ke lensa kamera dengan ekspresi emosional halus" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">👁️ Tatapan ke Kamera</button>
+              <button type="button" data-en="floating dust particles and glowing embers drifting in the air" data-id="partikel debu dan bara bercahaya melayang di udara" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">✨ Partikel Melayang</button>
+              <button type="button" data-en="water droplets splashing in crisp slow motion with realistic fluid physics" data-id="percikan tetesan air dalam gerak lambat tajam dengan fisika fluida realistis" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">💧 Percikan Air</button>
+              <button type="button" data-en="thick atmospheric smoke swirling around the subject" data-id="asap atmosferik tebal berputar mengelilingi subjek" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">🌫️ Kabut Berputar</button>
+              <button type="button" data-en="natural breathing motion and micro-facial expressions" data-id="gerakan napas alami dan ekspresi mikro wajah yang hidup" class="micro-chip px-3 py-1.5 rounded-xl text-xs border border-slate-700 bg-studio-950/80 text-slate-300 hover:border-slate-500 transition">🙂 Ekspresi Mikro Wajah</button>
+            </div>
+          </div>
+        </div>
+        <!-- Step 2B: Dialogue, Speech & Live AI TTS Audio Actor -->
+        <div class="glass-panel rounded-3xl p-5 space-y-4 border border-indigo-500/30">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center">💬</span>
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                  <span>Percakapan, Dialog & Lip-Sync</span>
+                  <span class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">TTS Voice Ready</span>
+                </h2>
+              </div>
+            </div>
+            <button type="button" id="btn-clear-dialogue" class="text-xs text-rose-400 hover:text-rose-300 font-semibold">Kosongkan Dialog</button>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label for="input-dialogue-quote" class="block text-xs font-semibold text-slate-300 mb-1">
+                Kalimat / Dialog yang Diucapkan Subjek <span class="text-slate-500">(Bisa Bahasa Indonesia atau Inggris)</span>
+              </label>
+              <input id="input-dialogue-quote" type="text" placeholder="Contoh: 'Selamat datang di episode kali ini, mari kita mulai eksplorasi!'..." class="w-full px-4 py-2.5 rounded-2xl bg-studio-950 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div>
+                <label for="select-speech-tone" class="block text-xs font-medium text-slate-400 mb-1">Intonasi Suara</label>
+                <select id="select-speech-tone" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="speaking warmly and naturally|berbicara hangat dan alami" selected>🎙️ Hangat & Ramah</option>
+                  <option value="speaking with calm confident authority|berbicara tenang penuh keyakinan">💼 Percaya Diri</option>
+                  <option value="whispering intimately with soft breathy tone|berbisik lembut dengan nada intim">🤫 Berbisik Lembut</option>
+                  <option value="speaking with intense emotional passion|berbicara dengan nada emosional berapi-api">🔥 Penuh Emosi</option>
+                  <option value="solemn cinematic documentary voiceover tone|nada narator dokumenter yang khidmat">📖 Narator Khidmat</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="select-voice-actor" class="block text-xs font-medium text-slate-400 mb-1">Karakter Suara (TTS)</label>
+                <select id="select-voice-actor" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="Zephyr" selected>🌟 Zephyr (Cerah & Alami)</option>
+                  <option value="Puck">⚡ Puck (Semangat / Upbeat)</option>
+                  <option value="Kore">👑 Kore (Tegas & Elegan)</option>
+                  <option value="Fenrir">🐺 Fenrir (Dinamis & Berani)</option>
+                  <option value="Aoede">🍃 Aoede (Lembut & Teduh)</option>
+                  <option value="Charon">🎙️ Charon (Dalam & Informatif)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="select-lipsync-mode" class="block text-xs font-medium text-slate-400 mb-1">Mode Sinkronisasi Bibir</label>
+                <select id="select-lipsync-mode" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="accurate realistic phoneme lip-sync matching the spoken words|gerak bibir presisi dan sinkron sesuai kata yang diucapkan" selected>👄 Lip-Sync Presisi</option>
+                  <option value="subtle natural mouth movement and speaking pauses|gerak bibir natural santai dengan jeda bicara">🗣️ Gerak Mulut Alami</option>
+                  <option value="voiceover dialogue with thoughtful facial reactions without mouth opening|dialog suara latar tanpa gerakan bibir">🎙️ Voiceover Saja</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="select-speech-lang" class="block text-xs font-medium text-slate-400 mb-1">Bahasa Pengucapan</label>
+                <select id="select-speech-lang" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="Indonesian language|bahasa Indonesia" selected>🇮🇩 Bahasa Indonesia</option>
+                  <option value="natural clear English|bahasa Inggris yang jelas">🇺🇸 English</option>
+                  <option value="Japanese speech|bahasa Jepang">🇯🇵 Bahasa Jepang</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dialogue Quick Chips & AI Audio Preview Button -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-1">
+              <div class="flex flex-wrap gap-1.5 items-center">
+                <span class="text-[11px] font-semibold text-slate-400 mr-1">Contoh Cepat:</span>
+                <button type="button" class="btn-quick-dialogue px-2.5 py-1 rounded-xl text-xs bg-studio-950 border border-slate-800 text-slate-300 hover:border-indigo-400 transition" data-quote="Selamat datang di episode kali ini, mari kita mulai!">🎙️ Pembuka Podcast</button>
+                <button type="button" class="btn-quick-dialogue px-2.5 py-1 rounded-xl text-xs bg-studio-950 border border-slate-800 text-slate-300 hover:border-indigo-400 transition" data-quote="Semuanya berubah sejak hari itu...">🎬 Hook Sinematik</button>
+                <button type="button" class="btn-quick-dialogue px-2.5 py-1 rounded-xl text-xs bg-studio-950 border border-slate-800 text-slate-300 hover:border-indigo-400 transition" data-quote="Kualitas premium yang tidak bisa Anda temukan di tempat lain.">💎 Tagline Iklan</button>
+              </div>
+
+              <!-- AI TTS Voice Synthesizer Button -->
+              <button id="btn-play-voice-actor" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/10 shrink-0">
+                <span id="voice-spinner" class="hidden animate-spin">⏳</span>
+                <span>🔊 Uji Suara Aktor (AI TTS)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Step 3: Environment & Setting -->
+        <div class="glass-panel rounded-3xl p-5 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center">3</span>
+            <h2 class="text-sm sm:text-base font-bold text-white">Latar Tempat, Waktu & Cuaca</h2>
+          </div>
+
+          <div>
+            <label for="input-environment" class="block text-xs font-semibold text-slate-300 mb-1">Deskripsi Lokasi / Latar Belakang</label>
+            <input id="input-environment" type="text" value="reruntuhan kuil kuno di planet Mars dengan tebing batu merah megah" class="w-full px-4 py-2.5 rounded-2xl bg-studio-950 border border-slate-700/80 text-sm text-white focus:outline-none focus:border-indigo-500 transition" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="select-time" class="block text-xs font-medium text-slate-400 mb-1">Waktu</label>
+              <select id="select-time" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="">-- Bebas / Sesuai Deskripsi --</option>
+                <option value="golden hour sunset with warm long shadows|saat golden hour matahari terbenam dengan bayangan panjang hangat" selected>🌅 Golden Hour (Senja Hangat)</option>
+                <option value="blue hour twilight with deep indigo sky|saat blue hour senja kebiruan">🌆 Blue Hour (Senja Biru)</option>
+                <option value="midnight darkness illuminated by city lights|tengah malam gelap yang diterangi lampu kota">🌃 Tengah Malam</option>
+                <option value="bright midday sun with crisp clear sky|siang hari cerah">☀️ Siang Hari Cerah</option>
+              </select>
+            </div>
+            <div>
+              <label for="select-weather" class="block text-xs font-medium text-slate-400 mb-1">Cuaca</label>
+              <select id="select-weather" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="">-- Normal --</option>
+                <option value="heavy cinematic rain with puddles reflecting lights|hujan deras sinematik dengan genangan air memantulkan cahaya">🌧️ Hujan Sinematik</option>
+                <option value="dense volumetric fog rolling through the scene|kabut volumetrik tebal">🌫️ Kabut Tebal</option>
+                <option value="clear crisp air with high visibility|udara jernih tajam">✨ Udara Jernih</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Camera & Live Director Viewfinder HUD -->
+        <div class="glass-panel rounded-3xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center justify-center">4</span>
+              <h2 class="text-sm sm:text-base font-bold text-white">Sinematografi & Visual Viewfinder HUD</h2>
+            </div>
+            <span id="camera-preview-label" class="text-xs font-mono text-indigo-300 bg-indigo-950/60 px-3 py-1 rounded-xl border border-indigo-500/30">
+              Medium Shot • Slow Dolly In
+            </span>
+          </div>
+
+          <!-- Live Visual Camera Viewfinder Box with Rule of Thirds & Telemetry -->
+          <div class="bg-studio-950 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-full sm:w-56 h-32 rounded-xl bg-gradient-to-br from-studio-900 via-indigo-950/40 to-studio-900 border border-slate-700/80 flex items-center justify-center relative overflow-hidden shrink-0 shadow-inner group">
+              
+              <!-- Aspect Ratio Letterbox Matte Overlay -->
+              <div id="viewfinder-letterbox-top" class="absolute top-0 left-0 right-0 h-0 bg-black/80 transition-all pointer-events-none"></div>
+              <div id="viewfinder-letterbox-bottom" class="absolute bottom-0 left-0 right-0 h-0 bg-black/80 transition-all pointer-events-none"></div>
+
+              <!-- SVG Viewfinder -->
+              <svg id="camera-svg-preview" class="w-48 h-28 text-indigo-400" viewBox="0 0 160 90" fill="none">
+                <rect x="8" y="8" width="144" height="74" rx="4" stroke="currentColor" stroke-opacity="0.35" stroke-dasharray="3 3"/>
+                <!-- Rule of Thirds Grid -->
+                <line x1="8" y1="32" x2="152" y2="32" stroke="currentColor" stroke-opacity="0.18" />
+                <line x1="8" y1="58" x2="152" y2="58" stroke="currentColor" stroke-opacity="0.18" />
+                <line x1="56" y1="8" x2="56" y2="82" stroke="currentColor" stroke-opacity="0.18" />
+                <line x1="104" y1="8" x2="104" y2="82" stroke="currentColor" stroke-opacity="0.18" />
+                <!-- Center Crosshair -->
+                <line x1="77" y1="45" x2="83" y2="45" stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.6"/>
+                <line x1="80" y1="42" x2="80" y2="48" stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.6"/>
+                <!-- Subject -->
+                <circle id="svg-subject-head" cx="80" cy="36" r="11" fill="currentColor" fill-opacity="0.35" stroke="currentColor" stroke-width="2"/>
+                <path id="svg-subject-body" d="M58 76 C58 54, 102 54, 102 76" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.25"/>
+                <path id="svg-motion-arrow" d="M25 45 L48 45 M42 39 L48 45 L42 51" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+
+              <!-- Viewfinder Live Camera Telemetry Readouts -->
+              <div class="absolute top-1.5 left-2 text-[9px] font-mono text-emerald-400 flex items-center gap-1.5 pointer-events-none">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                <span>REC • RAW 8K</span>
+              </div>
+              <div class="absolute top-1.5 right-2 text-[9px] font-mono text-slate-400 pointer-events-none">
+                <span id="telemetry-fps">24 FPS</span> • <span id="telemetry-shutter">1/48</span>
+              </div>
+              <div class="absolute bottom-1.5 left-2 text-[9px] font-mono text-amber-300 pointer-events-none">
+                <span id="telemetry-lens">35mm T2.0</span>
+              </div>
+              <span id="svg-ar-badge" class="absolute bottom-1.5 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-studio-900/90 text-amber-300 border border-slate-700">16:9</span>
+            </div>
+            
+            <div class="text-xs text-slate-300 space-y-1.5 flex-1">
+              <div class="font-bold text-white flex items-center gap-2" id="camera-summary-title">
+                <span>Medium Shot • Slow Dolly In</span>
+              </div>
+              <p id="camera-summary-desc" class="text-slate-400 leading-relaxed text-[11px]">
+                Kamera mendekat secara halus ke arah subjek dengan kedalaman ruang dangkal (shallow depth of field) dan bokeh sinematik.
+              </p>
+              <div class="flex items-center gap-2 pt-1 text-[10px] text-slate-500 font-mono">
+                <span>Rule of Thirds: Terpasang</span> • <span>Safe Action: 90%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="select-shot" class="block text-xs font-semibold text-slate-400 mb-1">Ukuran Shot</label>
+              <select id="select-shot" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="extreme wide establishing shot|extreme wide establishing shot">🏞️ Extreme Wide Shot</option>
+                <option value="wide full-body shot|wide shot seluruh tubuh">🧍 Wide / Full Body</option>
+                <option value="medium waist-up shot|medium shot dari pinggang ke atas" selected>🎬 Medium Shot</option>
+                <option value="intimate close-up portrait shot|close-up shot fokus wajah">👤 Close-Up</option>
+                <option value="extreme macro close-up shot with microscopic detail|extreme macro close-up">🔍 Extreme Macro</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="select-movement" class="block text-xs font-semibold text-slate-400 mb-1">Gerakan Kamera</label>
+              <select id="select-movement" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="smooth slow dolly in toward the subject|kamera bergerak maju perlahan (dolly in)" selected>➡️ Slow Dolly In</option>
+                <option value="smooth tracking shot following the subject seamlessly|kamera mengikuti pergerakan subjek (tracking shot)">🏃 Tracking / Follow</option>
+                <option value="360-degree orbital arc shot around the subject|kamera berputar mengelilingi subjek (orbital arc)">🔄 Orbit 360°</option>
+                <option value="locked-off static tripod shot with zero camera shake|kamera statis di tripod">🛑 Static Tripod</option>
+                <option value="vertical crane shot rising upward|kamera naik ke atas (crane up)">⬆️ Crane Up</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="select-lens" class="block text-xs font-semibold text-slate-400 mb-1">Lensa & Karakter Optik</label>
+              <select id="select-lens" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="shot on 35mm anamorphic lens with shallow depth of field and soft cinematic bokeh|direkam dengan lensa anamorfik 35mm bokeh lembut" selected>🎞️ 35mm Anamorphic</option>
+                <option value="shot on 85mm f/1.4 prime portrait lens with creamy background blur|lensa potret 85mm f/1.4 blur halus">📷 85mm f/1.4 Prime</option>
+                <option value="shot on 16mm ultra-wide angle lens|lensa ultra-wide 16mm">🌐 16mm Ultra-Wide</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="select-style" class="block text-xs font-semibold text-slate-400 mb-1">Gaya Visual</label>
+              <select id="select-style" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="photorealistic raw 8K cinema footage shot on ARRI Alexa 65|rekaman sinema fotorealistik 8K ARRI Alexa" selected>🎥 ARRI Cinema 8K</option>
+                <option value="high-end commercial product videography with studio polish|iklan produk komersial premium">💎 Iklan Komersial</option>
+                <option value="breathtaking anime feature film style inspired by Makoto Shinkai|anime sinematik Makoto Shinkai">🌸 Anime Sinematik</option>
+                <option value="3D stylized animation rendered in Unreal Engine 5|animasi 3D Unreal Engine 5">🧊 3D Animation</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+            <div>
+              <label for="select-ar" class="block text-xs font-medium text-slate-400 mb-1">Rasio Layar</label>
+              <select id="select-ar" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="16:9" selected>📺 16:9 Lanskap</option>
+                <option value="9:16">📱 9:16 Vertikal</option>
+                <option value="21:9">🎬 21:9 Ultrawide</option>
+                <option value="1:1">⏹️ 1:1 Persegi</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="select-duration" class="block text-xs font-medium text-slate-400 mb-1">Durasi</label>
+              <select id="select-duration" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="5s" selected>⏳ 5 Detik</option>
+                <option value="8s">⏳ 8 Detik</option>
+                <option value="10s">⏳ 10 Detik</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Right Column: Live Output & Action (5 cols sticky) -->
+      <div class="lg:col-span-5 lg:sticky lg:top-20 space-y-4">
+        <div class="glass-panel-glow rounded-3xl p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span>Hasil Prompt Siap Pakai</span>
+                <span id="active-model-pill" class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Universal</span>
+              </h2>
+            </div>
+            <div class="flex items-center bg-studio-950 p-1 rounded-xl border border-slate-800">
+              <button type="button" id="lang-en" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">EN</button>
+              <button type="button" id="lang-id" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition">ID</button>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <label for="output-prompt" class="font-semibold text-slate-300">Master Prompt:</label>
+              <span id="word-count-badge" class="text-[11px] font-mono text-slate-400">0 kata</span>
+            </div>
+            <textarea id="output-prompt" rows="6" class="w-full p-4 rounded-2xl bg-studio-950 border border-slate-700/80 text-xs sm:text-sm text-indigo-100 font-mono leading-relaxed focus:outline-none focus:border-indigo-400 custom-scrollbar select-all"></textarea>
+          </div>
+
+          <div class="bg-studio-900/70 border border-slate-800 rounded-2xl p-3.5 space-y-1">
+            <div class="text-[11px] font-semibold text-slate-400">Terjemahan Indonesia:</div>
+            <p id="secondary-prompt-text" class="text-xs text-slate-300 leading-relaxed italic"></p>
+          </div>
+
+          <!-- Feature: 1-Click 5-Shot Coverage Pack (B-Roll Multi-Angle Generator) -->
+          <div class="bg-gradient-to-r from-amber-500/15 via-indigo-600/15 to-purple-600/15 border border-amber-500/30 rounded-2xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm">🎬</span>
+                <span class="text-xs font-bold text-amber-200">5-Shot Coverage Pack (B-Roll)</span>
+              </div>
+              <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">Multi-Angle</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              Otomatis buat 5 sudut kamera berbeda (Establishing, Medium, OTS, Macro Detail & Tracking) dari adegan ini langsung ke Storyboard!
+            </p>
+            <button id="btn-generate-5shot-pack" type="button" class="w-full py-2.5 px-3 rounded-xl bg-amber-500/25 hover:bg-amber-500/35 text-amber-200 border border-amber-500/40 text-xs font-bold transition flex items-center justify-center gap-2">
+              <span>🚀 Buat Paket 5 Sudut & Masukkan ke Storyboard</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="btn-copy-prompt" type="button" class="col-span-2 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs shadow-xl shadow-indigo-600/25 transition flex items-center justify-center gap-1.5">
+              <span>📋 Salin Prompt Utama</span>
+            </button>
+            <button id="btn-save-prompt" type="button" class="py-2.5 px-3 rounded-xl bg-studio-900 hover:bg-studio-800 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+              💾 Simpan Prompt
+            </button>
+            <button id="btn-add-to-storyboard" type="button" class="py-2.5 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition">
+              🎞️ + Ke Storyboard
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <!-- ==================== VIEW 1B: KARAKTER STUDIO ==================== -->
+    <section id="view-character" class="hidden space-y-6">
+      
+      <div class="glass-panel-glow rounded-3xl p-6 border border-purple-500/30 space-y-2">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">Character DNA Vault</span>
+              <h2 class="text-xl font-extrabold text-white">Studio Karakter Konsisten & Anti-Morphing</h2>
+            </div>
+            <p class="text-xs text-slate-400">Kunci konsistensi wajah, signature outfit, dan struktur proporsi fisik antar-scene video.</p>
+          </div>
+          <button id="btn-char-random" type="button" class="px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 border border-purple-500/30 text-xs font-bold transition flex items-center gap-1.5">
+            <span>🎲 Acak Karakter</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 space-y-4">
+          <div class="glass-panel rounded-3xl p-5 space-y-4">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="char-name" class="block text-xs font-semibold text-slate-300 mb-1">Nama Karakter</label>
+                <input id="char-name" type="text" value="Alya — Penjelajah Kosmik" class="w-full px-3.5 py-2.5 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white" />
+              </div>
+              <div>
+                <label for="char-archetype" class="block text-xs font-semibold text-slate-300 mb-1">Peran / Archetype</label>
+                <input id="char-archetype" type="text" value="seorang astronot penjelajah muda" class="w-full px-3.5 py-2.5 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label for="char-gender-age" class="block text-xs font-semibold text-slate-400 mb-1">Gender & Usia</label>
+                <select id="char-gender-age" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="24-year-old young woman|wanita muda berusia 24 tahun" selected>👩 Wanita Muda (~24 thn)</option>
+                  <option value="28-year-old young man|pria muda berusia 28 tahun">👨 Pria Muda (~28 thn)</option>
+                  <option value="40-year-old mature charismatic man|pria dewasa karismatik">🧔 Pria Dewasa (~40 thn)</option>
+                  <option value="19-year-old university student|mahasiswa remaja berusia 19 tahun">🎓 Remaja (~19 thn)</option>
+                  <option value="60-year-old wise elder|lansia bijaksana berusia 60 tahun">🧓 Lansia (~60 thn)</option>
+                  <option value="__custom__">✏️ Ketik Opsi Sendiri (Custom)...</option>
+                </select>
+                <input id="char-gender-age-custom" type="text" placeholder="Ketik gender & usia kustom..." class="hidden mt-1.5 w-full px-3 py-1.5 rounded-xl bg-studio-950 border border-purple-500/50 text-xs text-white" />
+              </div>
+
+              <div>
+                <label for="char-ethnicity" class="block text-xs font-semibold text-slate-400 mb-1">Etnis & Ciri Wajah</label>
+                <select id="char-ethnicity" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="Indonesian Southeast Asian features with warm tan skin|wajah khas Indonesia dengan kulit sawo matang" selected>🇮🇩 Indonesia / Asia Tenggara</option>
+                  <option value="East Asian features with fair skin|wajah Asia Timur">🏮 Asia Timur</option>
+                  <option value="European Caucasian features|wajah Kaukasia Barat">🏛️ Eropa / Barat</option>
+                  <option value="Middle Eastern features with sharp eyes|wajah Timur Tengah">🌙 Timur Tengah</option>
+                  <option value="__custom__">✏️ Ketik Opsi Sendiri (Custom)...</option>
+                </select>
+                <input id="char-ethnicity-custom" type="text" placeholder="Ketik etnis & ciri wajah kustom..." class="hidden mt-1.5 w-full px-3 py-1.5 rounded-xl bg-studio-950 border border-purple-500/50 text-xs text-white" />
+              </div>
+
+              <div>
+                <label for="char-body" class="block text-xs font-semibold text-slate-400 mb-1">Postur Tubuh</label>
+                <select id="char-body" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="slender athletic build|postur atletis ramping" selected>🏃 Atletis Ramping</option>
+                  <option value="tall lean stature|tinggi semampai">🧍 Tinggi Semampai</option>
+                  <option value="muscular heroic build|kekar berotot">💪 Kekar Heroik</option>
+                  <option value="__custom__">✏️ Ketik Opsi Sendiri (Custom)...</option>
+                </select>
+                <input id="char-body-custom" type="text" placeholder="Ketik postur tubuh kustom..." class="hidden mt-1.5 w-full px-3 py-1.5 rounded-xl bg-studio-950 border border-purple-500/50 text-xs text-white" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="char-hair" class="block text-xs font-semibold text-slate-400 mb-1">Gaya & Warna Rambut</label>
+                <select id="char-hair" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="shoulder-length wavy jet-black hair with soft bangs|rambut hitam bergelombang sebahu" selected>💇‍♀️ Hitam Bergelombang Sebahu</option>
+                  <option value="modern elegant hijab neatly styled|hijab modern elegan rapi">🧕 Hijab Modern Elegan</option>
+                  <option value="short textured dark brown undercut hair|rambut pendek undercut cokelat">💇‍♂️ Pendek Undercut Cokelat</option>
+                  <option value="high sleek ponytail with silver strands|kuncir kuda perak">⚡ Kuncir Kuda Perak</option>
+                  <option value="__custom__">✏️ Ketik Opsi Sendiri (Custom)...</option>
+                </select>
+                <input id="char-hair-custom" type="text" placeholder="Ketik gaya rambut kustom..." class="hidden mt-1.5 w-full px-3 py-1.5 rounded-xl bg-studio-950 border border-purple-500/50 text-xs text-white" />
+              </div>
+
+              <div>
+                <label for="char-eyes" class="block text-xs font-semibold text-slate-400 mb-1">Bentuk & Warna Mata</label>
+                <select id="char-eyes" class="w-full px-3 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                  <option value="expressive warm dark brown eyes with catchlights|mata cokelat tua ekspresif" selected>👁️ Cokelat Tua Ekspresif</option>
+                  <option value="piercing golden amber eyes|mata kuning amber tajam">✨ Amber Keemasan</option>
+                  <option value="deep emerald green eyes|mata hijau zamrud">💚 Hijau Zamrud</option>
+                  <option value="__custom__">✏️ Ketik Opsi Sendiri (Custom)...</option>
+                </select>
+                <input id="char-eyes-custom" type="text" placeholder="Ketik jenis mata kustom..." class="hidden mt-1.5 w-full px-3 py-1.5 rounded-xl bg-studio-950 border border-purple-500/50 text-xs text-white" />
+              </div>
+            </div>
+
+            <div>
+              <label for="char-outfit" class="block text-xs font-semibold text-slate-300 mb-1">Pakaian Khas (Signature Outfit)</label>
+              <input id="char-outfit" type="text" value="setelan antariksa putih matte dengan aksen garis oranye menyala" class="w-full px-3.5 py-2 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: DNA Token & Visual Character Card -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="glass-panel-glow rounded-3xl p-5 border border-purple-500/40 space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <span>Character DNA Card</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">Preserved</span>
+              </h3>
+              <span id="char-badge-count" class="text-xs text-purple-300 font-mono">Consolidated</span>
+            </div>
+
+            <!-- Visual Character Avatar Silhouette -->
+            <div class="p-4 rounded-2xl bg-studio-950 border border-purple-500/25 flex items-center gap-4">
+              <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center text-2xl shadow-lg shadow-purple-500/20 shrink-0">
+                👩‍🚀
+              </div>
+              <div class="space-y-1 overflow-hidden">
+                <div id="char-card-name" class="text-sm font-bold text-white truncate">Alya — Penjelajah Kosmik</div>
+                <div id="char-card-traits" class="text-[11px] text-purple-300 truncate">24 thn • Indonesia • Hitam Bergelombang</div>
+              </div>
+            </div>
+
+            <p id="char-dna-output" class="text-xs font-mono text-purple-100 bg-studio-950/80 p-3.5 rounded-2xl border border-purple-500/30 leading-relaxed"></p>
+
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button id="btn-use-char-in-builder" type="button" class="col-span-2 py-3 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition">
+                🎬 Gunakan di Video Builder &rarr;
+              </button>
+              <button id="btn-copy-char-dna" type="button" class="py-2.5 px-3 rounded-xl bg-studio-900 hover:bg-studio-800 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                📋 Salin DNA
+              </button>
+              <button id="btn-save-char-vault" type="button" class="py-2.5 px-3 rounded-xl bg-studio-900 hover:bg-studio-800 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+                💾 Simpan Katalog
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <!-- ==================== VIEW 1C: REMIX FOTO ==================== -->
+    <section id="view-remix" class="hidden space-y-6">
+      
+      <div class="glass-panel-glow rounded-3xl p-6 border border-pink-500/30 space-y-2">
+        <h2 class="text-xl font-extrabold text-white">Remix Foto Referensi: Ubah Pose, Posisi & Latar</h2>
+        <p class="text-xs text-slate-400">Pertahankan kemiripan wajah subjek asli sambil mengubah pose duduk, pakaian, dan latar studio secara presisi.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Step 1: Upload Dropzone -->
+          <div class="glass-panel rounded-3xl p-5 space-y-3">
+            <span class="text-xs font-bold text-pink-300 uppercase tracking-wider">1. Unggah Foto Acuan</span>
+            <label for="remix-photo-file" id="remix-dropzone" class="cursor-pointer border-2 border-dashed border-slate-700 hover:border-pink-500 rounded-2xl p-5 flex flex-col items-center justify-center text-center transition bg-studio-950/60">
+              <input id="remix-photo-file" type="file" accept="image/*" class="hidden" />
+              <div id="remix-photo-placeholder" class="space-y-1 text-slate-400">
+                <div class="text-2xl">📸</div>
+                <div class="text-xs font-semibold text-slate-300">Klik atau seret foto wajah/karakter ke sini</div>
+                <div class="text-[10px] text-slate-500">Mendukung format JPG, PNG, WEBP</div>
+              </div>
+              <img id="remix-photo-preview" src="" alt="Preview" class="hidden w-28 h-28 object-cover rounded-2xl mt-2 border border-slate-700 shadow-xl" />
+            </label>
+          </div>
+
+          <!-- Step 2: Pose & Background Controls -->
+          <div class="glass-panel rounded-3xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-pink-300 uppercase tracking-wider">2. Ubah Pose & Posisi Tubuh</span>
+              <button id="btn-remix-auto-ai" type="button" class="text-xs font-bold text-pink-300 hover:underline">✨ 1-Klik Pose Podcast</button>
+            </div>
+
+            <div>
+              <label for="select-remix-pose" class="block text-xs font-semibold text-slate-400 mb-1">Preset Pose Tubuh</label>
+              <select id="select-remix-pose" class="w-full px-3 py-2.5 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="sitting comfortably at a sleek podcast desk in front of a microphone|duduk di meja podcast profesional di depan microphone" selected>🎙️ Duduk di Meja Podcast</option>
+                <option value="sitting relaxed on a comfortable modern armchair with crossed legs|duduk santai di kursi dengan kaki bersilang">🛋️ Duduk di Kursi Santai</option>
+                <option value="standing confidently with arms crossed leaning against a wall|berdiri percaya diri bersandar dinding">🧍 Berdiri Bersandar Dinding</option>
+                <option value="walking slowly outdoors with casual candid movement|berjalan santai di luar ruangan">🚶 Berjalan Santai</option>
+                <option value="__custom__">✏️ Ketik Pose Sendiri (Custom)...</option>
+              </select>
+              <input id="input-remix-pose-custom" type="text" placeholder="Ketik pose kustom Anda..." class="hidden mt-1.5 w-full px-3 py-2 rounded-xl bg-studio-950 border border-pink-500/50 text-xs text-white" />
+            </div>
+
+            <div>
+              <label for="select-remix-bg" class="block text-xs font-semibold text-slate-400 mb-1">Ganti Latar Belakang</label>
+              <select id="select-remix-bg" class="w-full px-3 py-2.5 rounded-xl bg-studio-950 border border-slate-700 text-xs text-white">
+                <option value="modern podcast studio with acoustic wood slat walls, RGB neon accents, and broadcast equipment|studio podcast modern dengan dinding kayu akustik dan neon RGB" selected>🎙️ Studio Podcast Modern (Neon RGB)</option>
+                <option value="warm minimalist Scandinavian living room with soft natural daylight|ruang tamu minimalis Skandinavia hangat">🏡 Ruang Tamu Hangat</option>
+                <option value="cozy specialty artisan coffee shop with wooden interior|kafe kopi kayu yang nyaman">☕ Kafe Artisanal</option>
+                <option value="futuristic cyberpunk city street at night with neon lights|jalanan kota cyberpunk malam hari">🌃 Kota Cyberpunk Malam</option>
+                <option value="__custom__">✏️ Ketik Latar Sendiri (Custom)...</option>
+              </select>
+              <input id="input-remix-bg-custom" type="text" placeholder="Ketik latar kustom Anda..." class="hidden mt-1.5 w-full px-3 py-2 rounded-xl bg-studio-950 border border-pink-500/50 text-xs text-white" />
+            </div>
+          </div>
+
+        </div>
+
+        <div class="lg:col-span-5 space-y-4">
+          <div class="glass-panel-glow rounded-3xl p-5 border border-pink-500/40 space-y-3">
+            <h3 class="text-sm font-bold text-white">Prompt Remix Foto Hasil AI</h3>
+            <textarea id="remix-output-prompt" rows="6" class="w-full p-3.5 rounded-2xl bg-studio-950 border border-slate-700 text-xs text-pink-100 font-mono select-all"></textarea>
+            <p id="remix-output-id" class="text-xs text-slate-400 italic"></p>
+
+            <div class="grid grid-cols-2 gap-2 pt-2">
+              <button id="btn-copy-remix-prompt" type="button" class="py-3 px-3 rounded-xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs transition">
+                📋 Salin Prompt
+              </button>
+              <button id="btn-remix-to-builder" type="button" class="py-3 px-3 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-semibold text-slate-300 border border-slate-700 transition">
+                ⚙️ Kirim ke Builder
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <!-- ==================== VIEW 1D: LIGHTING RIG DESIGNER ==================== -->
+    <section id="view-lighting" class="hidden space-y-6">
+      
+      <div class="glass-panel-glow rounded-3xl p-6 border border-amber-500/30 space-y-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Lighting Rig Studio</span>
+              <h2 class="text-xl font-extrabold text-white">Simulator Tata Cahaya Sinematik 3-Titik</h2>
+            </div>
+            <p class="text-xs text-slate-400">Atur Key Light, Fill Light, Rim Light, dan Temperatur Warna Kelvin untuk disuntikkan ke prompt.</p>
+          </div>
+          <button id="btn-inject-lighting-builder" type="button" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-studio-950 text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+            <span>✨ Terapkan ke Builder</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Interactive Overhead Light Stage Simulator (SVG Canvas) -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="glass-panel rounded-3xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white uppercase tracking-wider">Overhead Studio Rig Map</span>
+              <span id="lighting-preset-name" class="text-xs font-mono text-amber-300">Hollywood Rembrandt 3200K</span>
+            </div>
+
+            <!-- Overhead Stage Diagram -->
+            <div class="relative w-full h-64 rounded-2xl bg-studio-950 border border-slate-800 flex items-center justify-center overflow-hidden">
+              <svg id="stage-svg" class="w-full h-full" viewBox="0 0 300 200">
+                <!-- Circular Studio Floor Grid -->
+                <circle cx="150" cy="100" r="85" stroke="#334155" stroke-opacity="0.3" stroke-dasharray="4 4" fill="none"/>
+                <circle cx="150" cy="100" r="50" stroke="#334155" stroke-opacity="0.2" stroke-dasharray="4 4" fill="none"/>
+                <line x1="150" y1="15" x2="150" y2="185" stroke="#1e293b" stroke-opacity="0.5"/>
+                <line x1="65" y1="100" x2="235" y2="100" stroke="#1e293b" stroke-opacity="0.5"/>
+                
+                <!-- Actor / Subject at center -->
+                <circle cx="150" cy="100" r="14" fill="#6366f1" fill-opacity="0.3" stroke="#818cf8" stroke-width="2"/>
+                <text x="150" y="104" text-anchor="middle" fill="#ffffff" font-size="9" font-weight="bold">ACTOR</text>
+
+                <!-- Camera at bottom -->
+                <rect x="138" y="168" width="24" height="14" rx="3" fill="#0f172a" stroke="#06b6d4" stroke-width="1.8"/>
+                <polygon points="144,168 150,160 156,168" fill="#06b6d4"/>
+                <text x="150" y="192" text-anchor="middle" fill="#06b6d4" font-size="8" font-family="monospace">CAMERA</text>
+
+                <!-- Key Light Beam & Lamp -->
+                <g id="svg-key-group">
+                  <path id="svg-key-beam" d="M80 50 L140 92 L146 108 Z" fill="#f59e0b" fill-opacity="0.25"/>
+                  <circle cx="80" cy="50" r="10" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+                  <text x="80" y="36" text-anchor="middle" fill="#f59e0b" font-size="8" font-weight="bold">KEY (45°)</text>
+                </g>
+
+                <!-- Fill Light Beam & Lamp -->
+                <g id="svg-fill-group">
+                  <path id="svg-fill-beam" d="M220 55 L160 92 L154 108 Z" fill="#38bdf8" fill-opacity="0.18"/>
+                  <circle cx="220" cy="55" r="9" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
+                  <text x="220" y="42" text-anchor="middle" fill="#38bdf8" font-size="8" font-weight="bold">FILL</text>
+                </g>
+
+                <!-- Rim / Hair Light Beam & Lamp -->
+                <g id="svg-rim-group">
+                  <path id="svg-rim-beam" d="M150 25 L144 90 L156 90 Z" fill="#c084fc" fill-opacity="0.25"/>
+                  <circle cx="150" cy="25" r="8" fill="#c084fc" stroke="#ffffff" stroke-width="1.5"/>
+                  <text x="150" y="16" text-anchor="middle" fill="#c084fc" font-size="8" font-weight="bold">RIM / HAIR</text>
+                </g>
+              </svg>
+
+              <!-- Color Temperature Pill -->
+              <span id="lighting-kelvin-badge" class="absolute bottom-2 right-2 text-[10px] font-mono px-2 py-0.5 rounded-lg bg-studio-900 text-amber-300 border border-slate-700">3200K Tungsten Warm</span>
+            </div>
+
+            <!-- Quick Lighting Preset Chips -->
+            <div class="space-y-2">
+              <span class="text-[11px] font-semibold text-slate-400">Pilih Skema Pencahayaan Ikonik:</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button type="button" class="btn-light-preset chip-active px-3 py-2 rounded-xl text-xs border border-slate-700 bg-studio-950 text-left" data-preset="rembrandt">
+                  <div class="font-bold text-white">Rembrandt</div>
+                  <div class="text-[10px] text-slate-400">Dramatis Segitiga</div>
+                </button>
+                <button type="button" class="btn-light-preset px-3 py-2 rounded-xl text-xs border border-slate-700 bg-studio-950 text-left" data-preset="cyberpunk">
+                  <div class="font-bold text-white">Neon Cyber</div>
+                  <div class="text-[10px] text-slate-400">Teal & Magenta</div>
+                </button>
+                <button type="button" class="btn-light-preset px-3 py-2 rounded-xl text-xs border border-slate-700 bg-studio-950 text-left" data-preset="golden">
+                  <div class="font-bold text-white">Golden Hour</div>
+                  <div class="text-[10px] text-slate-400">Hangat Senja</div>
+                </button>
+                <button type="button" class="btn-light-preset px-3 py-2 rounded-xl text-xs border border-slate-700 bg-studio-950 text-left" data-preset="commercial">
+                  <div class="font-bold text-white">Studio Clean</div>
+                  <div class="text-[10px] text-slate-400">Terang Lembut</div>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Lighting Sliders & Generated Tokens -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="glass-panel-glow rounded-3xl p-5 border border-amber-500/40 space-y-4">
+            
+            <h3 class="text-sm font-bold text-white">Kontrol Kekuatan & Temperatur Cahaya</h3>
+
+            <div class="space-y-3 text-xs">
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>Key Light (Cahaya Utama):</span>
+                  <span id="val-key-power" class="text-amber-400 font-mono font-bold">100%</span>
+                </div>
+                <input id="slider-key" type="range" min="10" max="100" value="100" class="w-full accent-amber-400 cursor-pointer" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>Fill Light (Pengisi Bayangan):</span>
+                  <span id="val-fill-power" class="text-cyan-400 font-mono font-bold">40%</span>
+                </div>
+                <input id="slider-fill" type="range" min="0" max="100" value="40" class="w-full accent-cyan-400 cursor-pointer" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>Rim / Back Light (Pemisah Garis Tubuh):</span>
+                  <span id="val-rim-power" class="text-purple-400 font-mono font-bold">75%</span>
+                </div>
+                <input id="slider-rim" type="range" min="0" max="100" value="75" class="w-full accent-purple-400 cursor-pointer" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>Temperatur Warna (Kelvin):</span>
+                  <span id="val-kelvin" class="text-amber-300 font-mono font-bold">3200K (Warm)</span>
+                </div>
+                <input id="slider-kelvin" type="range" min="2500" max="7500" step="100" value="3200" class="w-full accent-amber-300 cursor-pointer" />
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800 space-y-2">
+              <span class="text-[11px] font-semibold text-slate-400">Prompt Deskripsi Pencahayaan Dihasilkan:</span>
+              <p id="lighting-output-token" class="text-xs font-mono text-amber-200 bg-studio-950 p-3 rounded-xl border border-slate-800 leading-relaxed">
+                Rembrandt cinematic three-point lighting, strong warm key light at 45 degrees, soft diffused cool fill light, intense golden rim hair light separating subject from background, 3200K warm tungsten tone
+              </p>
+              <button id="btn-copy-lighting-token" type="button" class="w-full py-2.5 rounded-xl bg-studio-900 hover:bg-studio-800 text-xs font-semibold text-white border border-slate-700 transition">
+                📋 Salin Parameter Cahaya Ini
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+    <!-- ==================== VIEW 2: PRESET ==================== -->
+    <section id="view-presets" class="hidden space-y-4">
+      <div class="glass-panel rounded-3xl p-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-white">Preset Sinematik Teruji</h2>
+          <p class="text-xs text-slate-400">Klik untuk langsung memuat ke Studio Builder</p>
+        </div>
+        <span class="text-xs font-mono text-indigo-400">5 Pilihan Unggulan</span>
+      </div>
+      <div id="presets-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ==================== VIEW 3: STORYBOARD ==================== -->
+    <section id="view-storyboard" class="hidden space-y-4">
+      <div class="glass-panel rounded-3xl p-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-white">Multi-Scene Video Storyboard</h2>
+          <p class="text-xs text-slate-400">Susun urutan sequence klip sinematik Anda</p>
+        </div>
+        <button id="btn-copy-all-storyboard" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white transition">
+          Salin Seluruh Naskah
+        </button>
+      </div>
+      <div id="storyboard-list" class="space-y-3"></div>
+    </section>
+
+    <!-- ==================== VIEW 4: TERSIMPAN ==================== -->
+    <section id="view-saved" class="hidden space-y-4">
+      <div class="glass-panel rounded-3xl p-5 flex items-center justify-between">
+        <h2 class="text-base font-bold text-white">Prompt Tersimpan</h2>
+        <span class="text-xs text-slate-400">Koleksi favorit Anda</span>
+      </div>
+      <div id="saved-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+  </main>
+
+  <!-- Modal Input API Key -->
+  <div id="api-key-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-panel-glow rounded-3xl p-6 max-w-lg w-full border border-indigo-500/40 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 text-lg">
+            🔑
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-bold text-white">Pengaturan Gemini API Key</h3>
+            <p class="text-[11px] text-slate-400">Untuk Render Gambar AI, Voice Actor TTS & AI Director</p>
+          </div>
+        </div>
+        <button type="button" id="btn-close-api-modal" class="text-slate-400 hover:text-white text-sm font-bold p-1 rounded-lg hover:bg-studio-800 transition">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label for="input-custom-api-key" class="block text-xs font-semibold text-slate-300 mb-1.5">
+            Google Gemini API Key
+          </label>
+          <div class="relative">
+            <input id="input-custom-api-key" type="password" placeholder="Tempel API Key di sini (AIzaSy...)" class="w-full pl-3.5 pr-20 py-2.5 rounded-xl bg-studio-950 border border-slate-700 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition font-mono" />
+            <button type="button" id="btn-toggle-key-visibility" class="absolute right-2.5 top-1/2 -translate-y-1/2 px-2 py-1 text-[11px] text-slate-400 hover:text-white rounded bg-studio-900 border border-slate-800 transition">
+              Lihat
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-studio-950/80 border border-slate-800 space-y-2 text-xs">
+          <div class="flex items-center gap-2 text-amber-300 font-semibold text-[11px]">
+            <span>💡 Cara Cepat Dapat API Key Gratis:</span>
+          </div>
+          <ol class="list-decimal list-inside text-[11px] text-slate-300 space-y-1 leading-relaxed">
+            <li>Buka <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:underline font-semibold">Google AI Studio (Klik di sini)</a>.</li>
+            <li>Masuk dengan akun Google Anda lalu klik <strong>"Create API key"</strong>.</li>
+            <li>Salin kodenya lalu tempel di kolom atas. Kunci hanya tersimpan di browser Anda (lokal).</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800">
+        <button type="button" id="btn-remove-api-key" class="px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition">
+          Hapus Kunci
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btn-cancel-api-modal" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-300 hover:bg-studio-800 transition">
+            Batal
+          </button>
+          <button type="button" id="btn-save-api-key" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition">
+            Simpan & Terapkan
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 pointer-events-none flex flex-col gap-2"></div>
+  <script>
+    // Audio FX helper via AudioContext
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function playTone(freq = 520, type = 'sine', duration = 0.08) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Audio error silent fallback
+      }
+    }
+
+    const MODEL_CONFIGS = {
+      universal: {
+        name: 'Universal',
+        tip: 'Tips Universal: Urutkan dari Subjek Utama → Aksi → Latar → Kamera → Pencahayaan & Gaya Visual.',
+        formatPrompt: (p) => [p.shotAndAngle, p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.cameraMovement, p.lensAndStyle, p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join(', ') + '.'
+      },
+      veo: {
+        name: 'Google Veo',
+        tip: 'Tips Google Veo: Sangat responsif terhadap istilah sinematografi nyata (lensa anamorfik, volumetric lighting).',
+        formatPrompt: (p) => `Cinematic video, ${[p.shotAndAngle, p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.cameraMovement, p.lensAndStyle, p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join('. ')}. Aspect ratio ${p.ar}, duration ${p.duration}.`
+      },
+      sora: {
+        name: 'OpenAI Sora',
+        tip: 'Tips OpenAI Sora: Gunakan deskripsi naratif mendetail tentang interaksi fisik di dunia nyata.',
+        formatPrompt: (p) => `A highly detailed cinematic scene showing ${p.subjectAndAction || 'a dramatic subject'}. ${[p.dialogueClause, p.microMotions, p.environmentAndTime, `The camera captures a ${p.shotAndAngle || 'medium shot'} with ${p.cameraMovement || 'smooth motion'}`, p.lensAndStyle, p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join('. ')}. (${p.ar}, ${p.duration})`
+      },
+      runway: {
+        name: 'Runway Gen-3',
+        tip: 'Tips Runway Gen-3: Gunakan struktur [Gerakan Kamera]: [Deskripsi Adegan Utama].',
+        formatPrompt: (p) => {
+          const cam = [p.cameraMovement, p.shotAndAngle].filter(Boolean).join(', ') || 'Dynamic camera shot';
+          const body = [p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.lensAndStyle, p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join(', ');
+          return `[${cam}]: ${body}.`;
+        }
+      },
+      kling: {
+        name: 'Kling AI 1.6',
+        tip: 'Tips Kling AI: Unggul pada pergerakan karakter kompleks, ekspresi realistis, dan lip-sync presisi.',
+        formatPrompt: (p) => [
+          `Subject & Action: ${p.subjectAndAction}`,
+          p.dialogueClause ? `Dialogue: ${p.dialogueClause}` : '',
+          p.microMotions ? `Motion Details: ${p.microMotions}` : '',
+          p.environmentAndTime ? `Environment: ${p.environmentAndTime}` : '',
+          `Camera: ${[p.shotAndAngle, p.cameraMovement, p.lensAndStyle].filter(Boolean).join(', ')}`,
+          `Lighting & Style: ${[p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join(', ')}`
+        ].filter(Boolean).join(' | ')
+      },
+      luma: {
+        name: 'Luma Dream Machine',
+        tip: 'Tips Luma Dream Machine: Gunakan kalimat mengalir dan kata kerja aksi dinamis.',
+        formatPrompt: (p) => [p.shotAndAngle, p.cameraMovement, p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.lightingAndColor, p.lensAndStyle, p.pacing, p.magicBoost].filter(Boolean).join(', ') + '.'
+      },
+      pika: {
+        name: 'Pika Labs',
+        tip: 'Tips Pika Labs: Menyertakan parameter flag -ar, -motion, dan -neg di akhir prompt.',
+        formatPrompt: (p) => `${[p.shotAndAngle, p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.cameraMovement, p.lensAndStyle, p.lightingAndColor, p.pacing, p.magicBoost].filter(Boolean).join(', ')} -ar ${p.ar} -motion 3 -fps 24`
+      },
+      hailuo: {
+        name: 'Hailuo MiniMax',
+        tip: 'Tips Hailuo MiniMax: Sangat kuat dalam suasana emosional dan mimik wajah hidup.',
+        formatPrompt: (p) => [p.shotAndAngle, p.cameraMovement, p.subjectAndAction, p.dialogueClause, p.microMotions, p.environmentAndTime, p.lightingAndColor, p.lensAndStyle, p.pacing, p.magicBoost].filter(Boolean).join(', ') + '.'
+      }
+    };
+    const ID_TO_EN_DICT = [
+      ['seorang astronot wanita', 'a female astronaut'],
+      ['seorang astronot', 'an astronaut'],
+      ['astronot', 'astronaut'],
+      ['helm kaca reflektif', 'a reflective glass visor helmet'],
+      ['dengan pantulan nebula', 'reflecting a glowing cosmic nebula'],
+      ['berjalan perlahan', 'walking slowly with deliberate steps'],
+      ['menembus badai pasir', 'through a swirling sandstorm'],
+      ['sambil menoleh ke arah kamera', 'while turning toward the camera'],
+      ['menoleh ke kamera', 'turning gently toward the camera'],
+      ['jalanan kota tokyo futuristik', 'a futuristic cyberpunk Tokyo street'],
+      ['yang basah oleh hujan', 'slick and wet from rain'],
+      ['papan reklame hologram', 'glowing holographic neon billboards'],
+      ['host wanita muda', 'a young female host'],
+      ['rekaman podcast', 'recording a podcast'],
+      ['di studio estetik', 'in an aesthetic modern studio'],
+      ['studio modern', 'sleek modern studio'],
+      ['memegang mic siaran', 'holding a broadcast microphone'],
+      ['tersenyum ramah', 'smiling warmly'],
+      ['cahaya neon hangat sinematik', 'cinematic warm neon lighting'],
+      ['mobil sport merah klasik', 'a classic red sports car'],
+      ['melaju kencang', 'speeding dynamically'],
+      ['jalan pegunungan pesisir laut', 'a coastal mountain highway'],
+      ['saat senja golden hour', 'during golden hour sunset'],
+      ['menuangkan susu steamed', 'pouring velvety steamed milk'],
+      ['cangkir kopi espresso', 'an espresso cup'],
+      ['latte art bunga', 'intricate rosetta latte art'],
+      ['uap hangat mengepul', 'delicate warm steam rising'],
+      ['pendekar cyberpunk', 'a cyberpunk warrior'],
+      ['berjaket reflektif', 'wearing a reflective high-collar jacket'],
+      ['jalanan tokyo malam hari basah oleh hujan', 'rain-slicked Tokyo night street'],
+      ['papan neon hologram memantul di genangan air', 'holographic neon reflections in water puddles']
+    ];
+
+    function translateText(text) {
+      if (!text || !text.trim()) return '';
+      let out = text.trim();
+      ID_TO_EN_DICT.forEach(([idPhrase, enPhrase]) => {
+        out = out.replace(new RegExp(idPhrase, 'gi'), enPhrase);
+      });
+      return out;
+    }
+
+    let state = {
+      activeTab: 'instant',
+      instantTarget: 'kling',
+      instantPhoto: null,
+      model: 'universal',
+      mode: 't2v',
+      outputLang: 'en',
+      magicBoost: true,
+      selectedMicroMotions: [],
+      storyboard: [],
+      savedPrompts: [
+        {
+          title: 'Contoh: Podcaster di Studio Neon',
+          model: 'KLING AI',
+          prompt: 'Subject & Action: a young female host recording a podcast in an aesthetic modern studio smiling warmly | Camera: medium shot, slow dolly in | Lighting & Style: cinematic warm neon lighting, photorealistic 8k'
+        }
+      ],
+      characters: [],
+      remixPhoto: null,
+      _lastInstantResult: null,
+      lighting: {
+        preset: 'rembrandt',
+        keyPower: 100,
+        fillPower: 40,
+        rimPower: 75,
+        kelvin: 3200
+      }
+    };
+    function showToast(msg) {
+      playTone(660, 'sine', 0.06);
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const t = document.createElement('div');
+      t.className = 'px-4 py-3 rounded-2xl border border-indigo-500/50 bg-studio-900/95 text-indigo-200 text-xs shadow-2xl flex items-center gap-2.5 transition-all';
+      t.innerHTML = `<span>✨</span><span class="font-semibold">${msg}</span>`;
+      container.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transform = 'translateY(8px)';
+        t.style.transition = 'all 0.3s ease';
+        setTimeout(() => t.remove(), 300);
+      }, 2500);
+    }
+
+    function copyToClipboard(text, label = 'Teks') {
+      if (!text) return;
+      playTone(880, 'triangle', 0.08);
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(`${label} berhasil disalin!`);
+      } catch (e) {
+        showToast('Gagal menyalin otomatis');
+      }
+      ta.remove();
+    }
+
+    function switchTab(tabName) {
+      playTone(480, 'sine', 0.05);
+      state.activeTab = tabName;
+      ['instant', 'builder', 'character', 'remix', 'lighting', 'presets', 'storyboard', 'saved'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const nav = document.getElementById(`nav-${t}`);
+        if (!view || !nav) return;
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          nav.className = 'nav-tab active-nav-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5';
+        } else {
+          view.classList.add('hidden');
+          nav.className = 'nav-tab px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white transition-all flex items-center gap-1.5';
+        }
+      });
+
+      if (tabName === 'builder') updateBuilderPromptUI();
+      if (tabName === 'character') updateCharacterPromptUI();
+      if (tabName === 'remix') updateRemixPromptUI();
+      if (tabName === 'lighting') updateLightingRigUI();
+      if (tabName === 'presets') renderPresets();
+      if (tabName === 'storyboard') renderStoryboard();
+      if (tabName === 'saved') renderSavedPrompts();
+    }
+
+    // Helper untuk mengambil API Key: membaca dari localStorage, jika kosong default ke string kosong
+    function getApiKey() {
+      try {
+        const saved = localStorage.getItem('cineprompt_gemini_api_key');
+        if (saved && saved.trim()) return saved.trim();
+      } catch (e) {
+        // Fallback jika localStorage diblokir
+      }
+      return "";
+    }
+
+    function updateApiStatusIndicator() {
+      const dot = document.getElementById('api-status-dot');
+      const key = getApiKey();
+      if (!dot) return;
+      if (key) {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-slate-500';
+      }
+    }
+
+    // Fungsi untuk memurnikan prompt menjadi fotografi mentah alami (menghilangkan tampilan kartun/AI plastik)
+    function distillVisualPrompt(rawPrompt) {
+      if (!rawPrompt) return 'unretouched raw candid 35mm photograph, real-life authentic lighting';
+      let cleaned = rawPrompt
+        // Buang tag struktur video
+        .replace(/Subject & Action:/gi, '')
+        .replace(/Subject:/gi, '')
+        .replace(/Action:/gi, '')
+        .replace(/Dialogue:[^|]+/gi, '')
+        .replace(/Motion Details:/gi, '')
+        .replace(/Environment:/gi, '')
+        .replace(/Camera:[^|]+/gi, '')
+        .replace(/Lighting & Style:/gi, '')
+        .replace(/\[.*?\]/g, '')
+        .replace(/--ar\s+[0-9:]+/gi, '')
+        .replace(/-ar\s+[0-9:]+/gi, '')
+        .replace(/-motion\s+[0-9]+/gi, '')
+        .replace(/-fps\s+[0-9]+/gi, '')
+        .replace(/\b(5s|8s|10s|15s|24fps|60fps)\b/gi, '')
+        .replace(/\b(dolly in|dolly out|tracking shot|crane up|orbit arc|pan left|camera movement)\b/gi, '')
+        // Buang kata pemicu tampilan plastik/kartun AI
+        .replace(/\b(8k|photorealistic|hyperrealistic|masterpiece|unreal engine|digital art|octane render|trending on artstation|cgi|vray)\b/gi, '')
+        .replace(/\|/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Gunakan gaya fotografi analog 35mm mentah tanpa retouch digital
+      return `Raw unedited candid color photo of ${cleaned}. Shot on 35mm analog film, Kodak Portra 400, 50mm f/1.8 lens, natural daylight, genuine skin texture with subtle imperfections and pores, optical film grain, realistic authentic shadows, zero digital airbrushing, unretouched real life documentary snapshot, completely non-digital aesthetic.`;
+    }
+
+    // Generator Visual Keyframe bebas efek kartun
+    async function generateConceptArtImage(promptText) {
+      const apiKey = getApiKey();
+      const cleanVisualPrompt = distillVisualPrompt(promptText);
+
+      // Coba endpoint resmi Google Imagen 3 jika API key tersedia
+      if (apiKey) {
+        try {
+          const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+          const imagenPayload = {
+            instances: [{ prompt: cleanVisualPrompt }],
+            parameters: {
+              sampleCount: 1,
+              aspectRatio: "16:9",
+              personGeneration: "allow_adult",
+              outputMimeType: "image/jpeg"
+            }
+          };
+
+          const resImagen = await fetch(imagenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(imagenPayload)
+          });
+
+          if (resImagen.ok) {
+            const dataImagen = await resImagen.json();
+            const b64 = dataImagen?.predictions?.[0]?.bytesBase64Encoded;
+            if (b64) {
+              return `data:image/jpeg;base64,${b64}`;
+            }
+          }
+
+          // Fallback Gemini Generative multimodal
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview:generateContent?key=${apiKey}`;
+          const geminiPayload = {
+            contents: [{
+              role: 'user',
+              parts: [{ text: `Generate a realistic raw documentary photograph: ${cleanVisualPrompt}` }]
+            }],
+            generationConfig: {
+              responseModalities: ['IMAGE']
+            }
+          };
+
+          const resGemini = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(geminiPayload)
+          });
+
+          if (resGemini.ok) {
+            const dataGemini = await resGemini.json();
+            const part = dataGemini?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+            if (part && part.inlineData?.data) {
+              return `data:${part.inlineData.mimeType || 'image/png'};base64,${part.inlineData.data}`;
+            }
+          }
+        } catch (e) {
+          console.warn('API direct render error:', e);
+        }
+      }
+
+      // Fallback Flux Realism murni tanpa AI enhancer (enhance=false mematikan filter kartun)
+      const encodedPrompt = encodeURIComponent(cleanVisualPrompt.slice(0, 420));
+      const fallbackUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1280&height=720&nologo=true&seed=${Math.floor(Math.random() * 9999999)}&model=flux&enhance=false`;
+
+      return new Promise((resolve) => {
+        const testImg = new Image();
+        testImg.onload = () => resolve(fallbackUrl);
+        testImg.onerror = () => resolve(fallbackUrl);
+        testImg.src = fallbackUrl;
+      });
+    }
+
+    // Base64 to ArrayBuffer
+    function base64ToArrayBuffer(base64) {
+      const binaryString = window.atob(base64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes.buffer;
+    }
+
+    // Convert raw PCM16 data into WAV container
+    function pcmToWav(pcm16, sampleRate = 24000) {
+      const numChannels = 1;
+      const bytesPerSample = 2;
+      const byteRate = sampleRate * numChannels * bytesPerSample;
+      const blockAlign = numChannels * bytesPerSample;
+      const dataSize = pcm16.length * bytesPerSample;
+      const buffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(buffer);
+
+      // RIFF header
+      function writeString(offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      writeString(0, 'RIFF');
+      view.setUint32(4, 36 + dataSize, true);
+      writeString(8, 'WAVE');
+      writeString(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // Linear PCM
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, byteRate, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, 16, true); // 16 bits
+      writeString(36, 'data');
+      view.setUint32(40, dataSize, true);
+
+      // Write PCM data
+      let offset = 44;
+      for (let i = 0; i < pcm16.length; i++, offset += 2) {
+        view.setInt16(offset, pcm16[i], true);
+      }
+
+      return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    // Gemini 2.5 Flash TTS synthesis
+    async function synthesizeSpeech(textToSpeak, voiceName = "Zephyr", toneInstruction = "") {
+      const apiKey = getApiKey();
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+      const payload = {
+        contents: [{
+          parts: [{ text: `Say with emotional cinematic conviction ${toneInstruction ? `(${toneInstruction})` : ''}: ${textToSpeak}` }]
+        }],
+        generationConfig: {
+          responseModalities: ["AUDIO"],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName }
+            }
+          }
+        }
+      };
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error('Gagal sintesis suara');
+      const data = await res.json();
+      const part = data?.candidates?.[0]?.content?.parts?.[0];
+      const audioData = part?.inlineData?.data;
+      const mimeType = part?.inlineData?.mimeType;
+
+      if (!audioData || !mimeType) throw new Error('Data audio kosong');
+      const rateMatch = mimeType.match(/rate=(\d+)/);
+      const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+      const pcmData = base64ToArrayBuffer(audioData);
+      const pcm16 = new Int16Array(pcmData);
+      const wavBlob = pcmToWav(pcm16, sampleRate);
+      return URL.createObjectURL(wavBlob);
+    }
+
+    async function generateInstantPrompt(userText, targetModel, aspectRatio, mood, photoData = null) {
+      const apiKey = getApiKey();
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+      const systemInstruction = `You are a world-class Hollywood film director and master AI prompt engineer specializing in Kling AI, Google Veo, OpenAI Sora, Runway Gen-3, Midjourney v6, and Flux.
+Analyze the user's idea (and reference photo if provided). Produce a photorealistic, coherent prompt tailored for ${targetModel.toUpperCase()}.
+Respond with strictly valid JSON matching this schema:
+{
+  "mainPromptEn": "Master cinema prompt in English matching the engine syntax",
+  "explanationId": "Penjelasan ringkas bahasa Indonesia tentang komposisi, pencahayaan, dan kamera",
+  "negativePrompt": "Comma separated negative tokens preventing distortion, morphing, glitches",
+  "recommendedSettings": "Specs: Aspect Ratio, Recommended FPS, Duration, Lens focal length",
+  "extractedSubject": "Subject description",
+  "extractedAction": "Action description",
+  "extractedEnvironment": "Environment description"
+}`;
+
+      try {
+        const parts = [{ text: `Engine: ${targetModel.toUpperCase()}\nAspect Ratio: ${aspectRatio}\nVisual Mood: ${mood}\nUser Input: ${userText}` }];
+        if (photoData) {
+          parts.push({
+            inlineData: {
+              mimeType: photoData.mimeType || 'image/jpeg',
+              data: photoData.base64
+            }
+          });
+        }
+
+        const payload = {
+          contents: [{ parts }],
+          generationConfig: {
+            responseMimeType: "application/json"
+          },
+          systemInstruction: { parts: [{ text: systemInstruction }] }
+        };
+
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const textRes = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (textRes) {
+            return JSON.parse(textRes);
+          }
+        }
+      } catch (err) {
+        // Fallback gracefully
+      }
+
+      // Offline Fallback
+      const translated = translateText(userText) || 'a captivating cinematic subject';
+      let promptEn = '';
+      if (targetModel === 'kling') {
+        promptEn = `Subject: ${translated} | Action: engaging in realistic physical motion | Scene: cinematic environment with ${mood} atmosphere | Camera: medium waist-up shot, smooth slow dolly in, 35mm lens | Aspect Ratio: ${aspectRatio}, photorealistic 8k`;
+      } else if (targetModel === 'runway') {
+        promptEn = `[Slow cinematic dolly in, medium shot]: ${translated}, natural movement with coherent physics. ${mood} lighting, 8k resolution, cinematic color grading.`;
+      } else if (targetModel === 'veo') {
+        promptEn = `Cinematic film footage, medium shot. ${translated}, interacting with realistic lighting and reflections. Shot on 35mm anamorphic prime lens, ARRI Alexa rendering, 8k resolution (${aspectRatio}).`;
+      } else if (targetModel === 'sora') {
+        promptEn = `A detailed cinematic sequence featuring ${translated}. Captured with smooth camera motion, coherent real-world physics, rich texture detail and ${mood} lighting (${aspectRatio}).`;
+      } else {
+        promptEn = `Photographic masterpiece of ${translated}, captured with 85mm f/1.4 prime lens, creamy bokeh, ${mood} lighting, ray tracing reflections, ultra-detailed textures, 8k resolution --ar ${aspectRatio}`;
+      }
+
+      return {
+        mainPromptEn: promptEn,
+        explanationId: `Adegan: ${userText} (Format khusus ${targetModel.toUpperCase()}, rasio ${aspectRatio}, suasana ${mood}).`,
+        negativePrompt: 'blurry, morphing, distorted anatomy, extra limbs, bad lighting, text, watermark, low resolution, glitch',
+        recommendedSettings: `Rasio: ${aspectRatio} • FPS: 24 • Model: ${targetModel.toUpperCase()}`,
+        extractedSubject: userText,
+        extractedAction: 'bergerak secara alami',
+        extractedEnvironment: 'studio / lokasi sinematik'
+      };
+    }
+    function updateCameraVisualizer(shot, move, ar) {
+      const head = document.getElementById('svg-subject-head');
+      const body = document.getElementById('svg-subject-body');
+      const arBadge = document.getElementById('svg-ar-badge');
+      const titleEl = document.getElementById('camera-summary-title');
+      const topMatte = document.getElementById('viewfinder-letterbox-top');
+      const botMatte = document.getElementById('viewfinder-letterbox-bottom');
+
+      if (arBadge) arBadge.textContent = ar;
+      if (titleEl) titleEl.textContent = `${shot.split(' ')[0]} • ${move.slice(0, 16)}`;
+
+      // Adjust aspect ratio letterbox bars
+      if (topMatte && botMatte) {
+        if (ar === '21:9') {
+          topMatte.style.height = '14%';
+          botMatte.style.height = '14%';
+        } else if (ar === '9:16') {
+          topMatte.style.height = '0%';
+          botMatte.style.height = '0%';
+        } else {
+          topMatte.style.height = '0%';
+          botMatte.style.height = '0%';
+        }
+      }
+
+      if (!head || !body) return;
+      if (shot.includes('extreme wide')) {
+        head.setAttribute('r', '5');
+        head.setAttribute('cy', '48');
+        body.setAttribute('d', 'M72 72 C72 60, 88 60, 88 72');
+      } else if (shot.includes('wide')) {
+        head.setAttribute('r', '8');
+        head.setAttribute('cy', '40');
+        body.setAttribute('d', 'M65 74 C65 56, 95 56, 95 74');
+      } else if (shot.includes('close-up') && !shot.includes('macro')) {
+        head.setAttribute('r', '17');
+        head.setAttribute('cy', '42');
+        body.setAttribute('d', 'M46 82 C46 62, 114 62, 114 82');
+      } else if (shot.includes('macro')) {
+        head.setAttribute('r', '24');
+        head.setAttribute('cy', '45');
+        body.setAttribute('d', 'M35 86 C35 72, 125 72, 125 86');
+      } else {
+        head.setAttribute('r', '11');
+        head.setAttribute('cy', '36');
+        body.setAttribute('d', 'M58 76 C58 54, 102 54, 102 76');
+      }
+    }
+    function updateBuilderPromptUI() {
+      const subj = document.getElementById('input-subject')?.value.trim() || 'a cinematic protagonist';
+      const act = document.getElementById('input-action')?.value.trim() || 'moving naturally';
+      const quote = document.getElementById('input-dialogue-quote')?.value.trim();
+      const speechTone = document.getElementById('select-speech-tone')?.value.split('|')[0] || '';
+      const lipsync = document.getElementById('select-lipsync-mode')?.value.split('|')[0] || '';
+      const env = document.getElementById('input-environment')?.value.trim();
+      const time = document.getElementById('select-time')?.value.split('|')[0] || '';
+      const weather = document.getElementById('select-weather')?.value.split('|')[0] || '';
+      const shot = document.getElementById('select-shot')?.value.split('|')[0] || 'medium waist-up shot';
+      const move = document.getElementById('select-movement')?.value.split('|')[0] || 'smooth slow dolly in';
+      const lens = document.getElementById('select-lens')?.value.split('|')[0] || 'shot on 35mm lens';
+      const style = document.getElementById('select-style')?.value.split('|')[0] || 'photorealistic raw 8K';
+      const ar = document.getElementById('select-ar')?.value || '16:9';
+      const duration = document.getElementById('select-duration')?.value || '5s';
+
+      let dialogueClause = '';
+      if (quote) {
+        dialogueClause = `speaking aloud saying "${quote}" with ${speechTone}, ${lipsync}`;
+      }
+
+      const parts = {
+        shotAndAngle: shot,
+        subjectAndAction: `${translateText(subj)} ${translateText(act)}`,
+        dialogueClause,
+        microMotions: state.selectedMicroMotions.map(m => m.en).join(', '),
+        environmentAndTime: [env ? `in ${translateText(env)}` : '', time ? `during ${time}` : '', weather ? `with ${weather}` : ''].filter(Boolean).join(' '),
+        cameraMovement: move,
+        lensAndStyle: `${lens}, ${style}`,
+        lightingAndColor: 'cinematic lighting, rich color grade',
+        pacing: 'natural real-time motion',
+        magicBoost: state.magicBoost ? '8k resolution, ray tracing reflections, master cinematography' : '',
+        ar,
+        duration
+      };
+
+      const cfg = MODEL_CONFIGS[state.model] || MODEL_CONFIGS.universal;
+      const promptEn = cfg.formatPrompt(parts);
+      const outEl = document.getElementById('output-prompt');
+      const secEl = document.getElementById('secondary-prompt-text');
+      const wordBadge = document.getElementById('word-count-badge');
+      const camLabel = document.getElementById('camera-preview-label');
+
+      if (outEl) {
+        outEl.value = state.outputLang === 'en' ? promptEn : `[Sinematik] ${subj} ${act}. ${env ? `Latar: ${env}. ` : ''}${quote ? `Dialog: "${quote}". ` : ''}Kamera: ${shot}, ${move}.`;
+      }
+      if (secEl) {
+        secEl.textContent = `Adegan: ${subj} ${act}. ${quote ? `Mengucapkan: "${quote}". ` : ''}${env ? `Latar: ${env}.` : ''}`;
+      }
+      if (wordBadge) wordBadge.textContent = `${promptEn.split(/\s+/).filter(Boolean).length} kata`;
+      if (camLabel) {
+        camLabel.textContent = `${shot.split(' ')[0]} • ${move.slice(0, 16)}`;
+      }
+
+      updateCameraVisualizer(shot, move, ar);
+    }
+
+    // 1-Click 5-Shot Coverage Pack (B-Roll Generator)
+    function generate5ShotCoveragePack() {
+      const subj = document.getElementById('input-subject')?.value.trim() || 'a cinematic protagonist';
+      const act = document.getElementById('input-action')?.value.trim() || 'performing an action';
+      const env = document.getElementById('input-environment')?.value.trim() || 'cinematic location';
+      const ar = document.getElementById('select-ar')?.value || '16:9';
+      const translatedSubj = translateText(subj);
+      const translatedAct = translateText(act);
+      const translatedEnv = translateText(env);
+
+      const pack = [
+        {
+          title: `Scene 1 (Wide Establishing): ${subj.slice(0, 24)}`,
+          prompt: `Extreme wide establishing shot, vertical crane rising upward. Revealing ${translatedEnv} with atmospheric haze, ${translatedSubj} visible in the expansive environment. Shot on 16mm ultra-wide lens, 8k resolution, cinematic lighting (${ar}, 5s).`,
+          duration: '5s'
+        },
+        {
+          title: `Scene 2 (Master Shot): ${subj.slice(0, 24)}`,
+          prompt: `Medium waist-up shot, smooth slow dolly in. ${translatedSubj} ${translatedAct} in ${translatedEnv}. Realistic physical interaction, natural micro-movements, 35mm anamorphic prime lens, creamy bokeh, 8k (${ar}, 5s).`,
+          duration: '5s'
+        },
+        {
+          title: `Scene 3 (Over-The-Shoulder OTS): Interaksi`,
+          prompt: `Over-the-shoulder intimate shot, shallow depth of field. Focusing on ${translatedSubj} with soft foreground framing, capturing emotional depth and nuanced expressions in ${translatedEnv}, 85mm f/1.4 lens (${ar}, 5s).`,
+          duration: '5s'
+        },
+        {
+          title: `Scene 4 (Macro Detail B-Roll): Properti / Tangan`,
+          prompt: `Extreme macro close-up shot, slow orbital arc. Microscopic razor-sharp focus on the intricate textures, hands, and props of ${translatedSubj}, water droplets and dust particles floating, 100mm macro lens (${ar}, 5s).`,
+          duration: '5s'
+        },
+        {
+          title: `Scene 5 (Dynamic Follow Tracking): Puncak Aksi`,
+          prompt: `Dynamic tracking follow shot moving seamlessly alongside ${translatedSubj} as they continue their motion through ${translatedEnv}, cinematic motion blur, volumetric god rays, high-end film grade (${ar}, 5s).`,
+          duration: '5s'
+        }
+      ];
+
+      pack.forEach(clip => {
+        state.storyboard.push({
+          title: clip.title,
+          ar,
+          duration: clip.duration,
+          prompt: clip.prompt
+        });
+      });
+
+      document.getElementById('badge-storyboard-count').textContent = state.storyboard.length;
+      switchTab('storyboard');
+      showToast('5-Shot Coverage Pack (B-Roll) berhasil dimasukkan ke Storyboard!');
+    }
+    function updateCharacterPromptUI() {
+      const name = document.getElementById('char-name')?.value.trim() || 'Alya';
+      const archetype = document.getElementById('char-archetype')?.value.trim() || 'penjelajah';
+
+      const genderEl = document.getElementById('char-gender-age');
+      const genderVal = genderEl?.value === '__custom__'
+        ? (document.getElementById('char-gender-age-custom')?.value.trim() || 'character')
+        : (genderEl?.value.split('|')[0] || 'young woman');
+
+      const ethEl = document.getElementById('char-ethnicity');
+      const ethVal = ethEl?.value === '__custom__'
+        ? (document.getElementById('char-ethnicity-custom')?.value.trim() || 'features')
+        : (ethEl?.value.split('|')[0] || 'Southeast Asian features');
+
+      const bodyEl = document.getElementById('char-body');
+      const bodyVal = bodyEl?.value === '__custom__'
+        ? (document.getElementById('char-body-custom')?.value.trim() || 'proportions')
+        : (bodyEl?.value.split('|')[0] || 'athletic build');
+
+      const hairEl = document.getElementById('char-hair');
+      const hairVal = hairEl?.value === '__custom__'
+        ? (document.getElementById('char-hair-custom')?.value.trim() || 'hair')
+        : (hairEl?.value.split('|')[0] || 'wavy hair');
+
+      const eyesEl = document.getElementById('char-eyes');
+      const eyesVal = eyesEl?.value === '__custom__'
+        ? (document.getElementById('char-eyes-custom')?.value.trim() || 'eyes')
+        : (eyesEl?.value.split('|')[0] || 'expressive eyes');
+
+      const outfit = document.getElementById('char-outfit')?.value.trim() || 'signature attire';
+
+      const dna = `${genderVal} (${translateText(archetype)}) with ${ethVal}, ${bodyVal}, ${hairVal}, ${eyesVal}, wearing ${translateText(outfit)}, ultra-detailed skin textures, photorealistic 8k`;
+      const dnaEl = document.getElementById('char-dna-output');
+      if (dnaEl) dnaEl.textContent = dna;
+
+      const cardName = document.getElementById('char-card-name');
+      const cardTraits = document.getElementById('char-card-traits');
+      if (cardName) cardName.textContent = name;
+      if (cardTraits) cardTraits.textContent = `${genderVal.split(' ')[0]} • ${ethVal.split(' ')[0]} • ${archetype}`;
+    }
+
+    function updateRemixPromptUI() {
+      const poseEl = document.getElementById('select-remix-pose');
+      const poseVal = poseEl?.value === '__custom__'
+        ? (document.getElementById('input-remix-pose-custom')?.value.trim() || 'posing naturally')
+        : (poseEl?.value.split('|')[0] || 'sitting at desk');
+
+      const bgEl = document.getElementById('select-remix-bg');
+      const bgVal = bgEl?.value === '__custom__'
+        ? (document.getElementById('input-remix-bg-custom')?.value.trim() || 'modern interior')
+        : (bgEl?.value.split('|')[0] || 'modern podcast studio');
+
+      const refNote = state.remixPhoto ? 'from reference image, preserving facial identity, ' : '';
+      const remixPrompt = `Photographic masterpiece portrait of subject ${refNote}now ${poseVal}. Environment: ${bgVal}. Shot on 85mm f/1.4 lens, natural lighting, 8k resolution, preserving original likeness and features.`;
+      const outEl = document.getElementById('remix-output-prompt');
+      const secEl = document.getElementById('remix-output-id');
+
+      if (outEl) outEl.value = remixPrompt;
+      if (secEl) secEl.textContent = `Remix: Menjaga wajah asli, mengubah pose menjadi: ${poseVal}, dengan latar: ${bgVal}.`;
+    }
+    function updateLightingRigUI() {
+      const keyBeam = document.getElementById('svg-key-beam');
+      const fillBeam = document.getElementById('svg-fill-beam');
+      const rimBeam = document.getElementById('svg-rim-beam');
+      const kelvinBadge = document.getElementById('lighting-kelvin-badge');
+      const presetBadge = document.getElementById('lighting-preset-name');
+      const outputToken = document.getElementById('lighting-output-token');
+
+      const keyVal = state.lighting.keyPower;
+      const fillVal = state.lighting.fillPower;
+      const rimVal = state.lighting.rimPower;
+      const kelvin = state.lighting.kelvin;
+
+      if (keyBeam) keyBeam.setAttribute('fill-opacity', (keyVal / 100 * 0.45).toFixed(2));
+      if (fillBeam) fillBeam.setAttribute('fill-opacity', (fillVal / 100 * 0.35).toFixed(2));
+      if (rimBeam) rimBeam.setAttribute('fill-opacity', (rimVal / 100 * 0.45).toFixed(2));
+
+      let kelvinName = 'Warm Tungsten';
+      if (kelvin > 5000) kelvinName = 'Cool Daylight 5600K';
+      else if (kelvin > 4000) kelvinName = 'Neutral Studio 4500K';
+
+      if (kelvinBadge) kelvinBadge.textContent = `${kelvin}K ${kelvinName}`;
+      if (presetBadge) presetBadge.textContent = `Setup: ${state.lighting.preset.toUpperCase()} (${kelvin}K)`;
+
+      const tokenText = `Three-point cinematic lighting: key light at ${keyVal}% power from 45-degree angle, fill light at ${fillVal}% power softening shadows, rim hair light at ${rimVal}% power sculpting edge contours, calibrated at ${kelvin}K ${kelvinName} with realistic light falloff`;
+      if (outputToken) outputToken.textContent = tokenText;
+    }
+    const PRESETS = [
+      { title: '🎙️ Podcast Studio High-End', model: 'kling', ar: '16:9', desc: 'Host wanita berinteraksi di meja podcast dengan mic siaran dan lighting neon hangat' },
+      { title: '🏎️ Supercar Mountain Drift', model: 'veo', ar: '21:9', desc: 'Mobil sport merah melaju kencang di pesisir tebing saat senja' },
+      { title: '☕ Latte Art B-Roll', model: 'veo', ar: '9:16', desc: 'Barista menuangkan susu steamed ke cangkir espresso dalam gerak lambat makro' },
+      { title: '🤖 Cyberpunk Alley Walk', model: 'sora', ar: '21:9', desc: 'Detektif cyberpunk berjaket reflektif di jalanan Tokyo malam hari basah oleh hujan' },
+      { title: '🌸 Anime Sakura Station', model: 'universal', ar: '16:9', desc: 'Gaya film animasi Makoto Shinkai di peron stasiun pedesaan Jepang' }
+    ];
+
+    function renderPresets() {
+      const grid = document.getElementById('presets-grid');
+      if (!grid) return;
+      grid.innerHTML = PRESETS.map(p => `
+        <div class="glass-panel rounded-3xl p-5 space-y-3 border border-slate-800 hover:border-indigo-500/50 transition">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-white">${p.title}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-indigo-500/20 text-indigo-300">${p.model.toUpperCase()}</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">${p.desc}</p>
+          <button type="button" class="btn-apply-preset w-full py-2.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 text-xs font-bold text-white transition" data-title="${p.title}" data-model="${p.model}">
+            Gunakan di Builder &rarr;
+          </button>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.btn-apply-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('input-subject').value = btn.dataset.title;
+          state.model = btn.dataset.model;
+          document.querySelectorAll('.model-btn').forEach(b => {
+            b.classList.toggle('chip-active', b.dataset.model === state.model);
+          });
+          switchTab('builder');
+          showToast(`Preset "${btn.dataset.title}" dimuat ke Builder!`);
+        });
+      });
+    }
+
+    function renderStoryboard() {
+      const el = document.getElementById('storyboard-list');
+      if (!el) return;
+      if (state.storyboard.length === 0) {
+        el.innerHTML = '<div class="glass-panel rounded-3xl p-8 text-center text-xs text-slate-400">Storyboard masih kosong. Tambahkan adegan dari Builder dengan tombol "+ Ke Storyboard" atau klik "5-Shot Coverage Pack".</div>';
+        return;
+      }
+      el.innerHTML = state.storyboard.map((s, idx) => `
+        <div class="glass-panel rounded-3xl p-5 border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-indigo-300 uppercase tracking-wider">SCENE ${idx + 1}: ${s.title}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] text-slate-400">${s.ar} • ${s.duration}</span>
+              <button type="button" class="btn-copy-scene text-xs text-indigo-400 hover:text-white" data-idx="${idx}">Salin</button>
+              <button type="button" class="btn-del-scene text-xs text-rose-400 hover:text-rose-300" data-idx="${idx}">Hapus</button>
+            </div>
+          </div>
+          <p class="text-xs font-mono text-slate-300 bg-studio-950 p-3.5 rounded-2xl border border-slate-800 leading-relaxed">${s.prompt}</p>
+        </div>
+      `).join('');
+
+      el.querySelectorAll('.btn-copy-scene').forEach(b => {
+        b.addEventListener('click', () => copyToClipboard(state.storyboard[Number(b.dataset.idx)].prompt, 'Scene'));
+      });
+      el.querySelectorAll('.btn-del-scene').forEach(b => {
+        b.addEventListener('click', () => {
+          state.storyboard.splice(Number(b.dataset.idx), 1);
+          document.getElementById('badge-storyboard-count').textContent = state.storyboard.length;
+          renderStoryboard();
+          showToast('Scene dihapus');
+        });
+      });
+    }
+
+    function renderSavedPrompts() {
+      const el = document.getElementById('saved-list');
+      if (!el) return;
+      if (state.savedPrompts.length === 0) {
+        el.innerHTML = '<div class="col-span-2 glass-panel rounded-3xl p-8 text-center text-xs text-slate-400">Belum ada prompt yang disimpan.</div>';
+        return;
+      }
+      el.innerHTML = state.savedPrompts.map((p, idx) => `
+        <div class="glass-panel rounded-3xl p-5 border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white">${p.title}</span>
+            <span class="text-[10px] text-indigo-300 font-mono px-2 py-0.5 rounded bg-indigo-500/20">${p.model}</span>
+          </div>
+          <p class="text-xs font-mono text-slate-300 bg-studio-950 p-3 rounded-2xl border border-slate-800 leading-relaxed">${p.prompt}</p>
+          <div class="flex items-center justify-between pt-1">
+            <button type="button" class="btn-copy-saved-item text-xs text-indigo-400 hover:text-white" data-idx="${idx}">Salin Prompt</button>
+            <button type="button" class="btn-del-saved-item text-xs text-rose-400 hover:text-rose-300" data-idx="${idx}">Hapus</button>
+          </div>
+        </div>
+      `).join('');
+
+      el.querySelectorAll('.btn-copy-saved-item').forEach(b => {
+        b.addEventListener('click', () => copyToClipboard(state.savedPrompts[Number(b.dataset.idx)].prompt, 'Prompt'));
+      });
+      el.querySelectorAll('.btn-del-saved-item').forEach(b => {
+        b.addEventListener('click', () => {
+          state.savedPrompts.splice(Number(b.dataset.idx), 1);
+          document.getElementById('badge-saved-count').textContent = state.savedPrompts.length;
+          renderSavedPrompts();
+          showToast('Prompt dihapus');
+        });
+      });
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      // Audio toggle button
+      document.getElementById('btn-sound-toggle')?.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        const icon = document.getElementById('sound-icon');
+        if (icon) icon.textContent = soundEnabled ? '🔊' : '🔇';
+        showToast(soundEnabled ? 'Audio FX diaktifkan' : 'Audio FX dinonaktifkan');
+      });
+
+      // Navigation listeners
+      document.getElementById('nav-instant')?.addEventListener('click', () => switchTab('instant'));
+      document.getElementById('nav-builder')?.addEventListener('click', () => switchTab('builder'));
+      document.getElementById('nav-character')?.addEventListener('click', () => switchTab('character'));
+      document.getElementById('nav-remix')?.addEventListener('click', () => switchTab('remix'));
+      document.getElementById('nav-lighting')?.addEventListener('click', () => switchTab('lighting'));
+      document.getElementById('nav-presets')?.addEventListener('click', () => switchTab('presets'));
+      document.getElementById('nav-storyboard')?.addEventListener('click', () => switchTab('storyboard'));
+      document.getElementById('nav-saved')?.addEventListener('click', () => switchTab('saved'));
+
+      // Modal API Key listeners
+      const apiModal = document.getElementById('api-key-modal');
+      const inputApiKey = document.getElementById('input-custom-api-key');
+
+      document.getElementById('btn-api-settings')?.addEventListener('click', () => {
+        playTone(600, 'sine', 0.05);
+        if (inputApiKey) inputApiKey.value = getApiKey();
+        apiModal?.classList.remove('hidden');
+      });
+
+      const closeApiModal = () => apiModal?.classList.add('hidden');
+      document.getElementById('btn-close-api-modal')?.addEventListener('click', closeApiModal);
+      document.getElementById('btn-cancel-api-modal')?.addEventListener('click', closeApiModal);
+
+      document.getElementById('btn-toggle-key-visibility')?.addEventListener('click', () => {
+        if (!inputApiKey) return;
+        inputApiKey.type = inputApiKey.type === 'password' ? 'text' : 'password';
+      });
+
+      document.getElementById('btn-save-api-key')?.addEventListener('click', () => {
+        const val = inputApiKey ? inputApiKey.value.trim() : '';
+        try {
+          if (val) {
+            localStorage.setItem('cineprompt_gemini_api_key', val);
+            showToast('API Key berhasil disimpan di browser!');
+          } else {
+            localStorage.removeItem('cineprompt_gemini_api_key');
+            showToast('API Key dikosongkan (menggunakan default environment).');
+          }
+        } catch (e) {
+          showToast('Gagal menyimpan ke penyimpanan lokal');
+        }
+        updateApiStatusIndicator();
+        closeApiModal();
+      });
+
+      document.getElementById('btn-remove-api-key')?.addEventListener('click', () => {
+        try {
+          localStorage.removeItem('cineprompt_gemini_api_key');
+          if (inputApiKey) inputApiKey.value = '';
+          showToast('API Key dihapus dari browser.');
+        } catch (e) {}
+        updateApiStatusIndicator();
+      });
+
+      updateApiStatusIndicator();
+
+      // Concept Art Visual Render Action (Gemini 3.1 Flash Image)
+      document.getElementById('btn-render-concept-art')?.addEventListener('click', async () => {
+        const promptToRender = document.getElementById('instant-output-prompt')?.value.trim() || document.getElementById('instant-user-input')?.value.trim();
+        if (!promptToRender) {
+          showToast('Ketik ide atau racik prompt terlebih dahulu!');
+          return;
+        }
+
+        playTone(720, 'triangle', 0.1);
+        const spinner = document.getElementById('concept-art-spinner');
+        const btnText = document.getElementById('concept-art-btn-text');
+        const placeholder = document.getElementById('concept-art-placeholder');
+        const resultImg = document.getElementById('concept-art-result-img');
+        const downloadBtn = document.getElementById('btn-download-concept-art');
+
+        spinner?.classList.remove('hidden');
+        if (btnText) btnText.textContent = 'Merender Visual AI...';
+
+        try {
+          const imgUrl = await generateConceptArtImage(promptToRender);
+          if (resultImg && placeholder) {
+            resultImg.src = imgUrl;
+            resultImg.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+          }
+          if (downloadBtn) {
+            downloadBtn.href = imgUrl;
+            downloadBtn.classList.remove('hidden');
+          }
+          showToast('Visual Keyframe berhasil dirender!');
+        } catch (e) {
+          showToast('Gagal merender visual: ' + (e.message || 'Periksa koneksi'));
+        } finally {
+          spinner?.classList.add('hidden');
+          if (btnText) btnText.textContent = '🖼️ Render Visual Frame';
+        }
+      });
+
+      // Live AI Voice Actor TTS Synthesizer
+      document.getElementById('btn-play-voice-actor')?.addEventListener('click', async () => {
+        const quote = document.getElementById('input-dialogue-quote')?.value.trim();
+        if (!quote) {
+          showToast('Ketik kalimat dialog karakter terlebih dahulu!');
+          return;
+        }
+
+        const voiceActor = document.getElementById('select-voice-actor')?.value || 'Zephyr';
+        const speechTone = document.getElementById('select-speech-tone')?.value.split('|')[0] || '';
+        const voiceSpinner = document.getElementById('voice-spinner');
+
+        voiceSpinner?.classList.remove('hidden');
+        showToast(`Memproses suara aktor ${voiceActor}...`);
+
+        try {
+          const audioUrl = await synthesizeSpeech(quote, voiceActor, speechTone);
+          const audio = new Audio(audioUrl);
+          audio.play();
+          showToast(`Memutar dialog aktor ${voiceActor}!`);
+        } catch (err) {
+          showToast('TTS audio membutuhkan koneksi API yang valid.');
+        } finally {
+          voiceSpinner?.classList.add('hidden');
+        }
+      });
+
+      // 5-Shot Coverage Pack Button
+      document.getElementById('btn-generate-5shot-pack')?.addEventListener('click', () => {
+        playTone(750, 'triangle', 0.12);
+        generate5ShotCoveragePack();
+      });
+
+      // Instant Generator Targets
+      document.querySelectorAll('.inst-target-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          playTone(550, 'sine', 0.04);
+          document.querySelectorAll('.inst-target-btn').forEach(b => b.classList.remove('chip-active'));
+          btn.classList.add('chip-active');
+          state.instantTarget = btn.dataset.instTarget;
+          const badge = document.getElementById('instant-badge-engine');
+          if (badge) badge.textContent = btn.textContent;
+        });
+      });
+
+      // Quick Chips for Instant View
+      document.querySelectorAll('.instant-quick-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          playTone(600, 'sine', 0.05);
+          const inp = document.getElementById('instant-user-input');
+          if (inp) {
+            inp.value = btn.dataset.idea;
+            inp.focus();
+            showToast('Ide dimuat!');
+          }
+        });
+      });
+
+      // Instant Photo Upload
+      const photoInput = document.getElementById('instant-photo-file');
+      photoInput?.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const dataUrl = ev.target.result;
+            const base64 = dataUrl.split(',')[1];
+            state.instantPhoto = { base64, mimeType: file.type, name: file.name };
+            const previewWrap = document.getElementById('instant-photo-preview-wrap');
+            const previewImg = document.getElementById('instant-photo-thumb');
+            const nameEl = document.getElementById('instant-photo-name');
+            if (previewImg) previewImg.src = dataUrl;
+            if (nameEl) nameEl.textContent = file.name;
+            previewWrap?.classList.remove('hidden');
+            showToast('Foto acuan berhasil dilampirkan!');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('btn-remove-instant-photo')?.addEventListener('click', () => {
+        state.instantPhoto = null;
+        if (photoInput) photoInput.value = '';
+        document.getElementById('instant-photo-preview-wrap')?.classList.add('hidden');
+        showToast('Foto acuan dihapus');
+      });
+
+      // Instant Generate Action
+      document.getElementById('btn-generate-instant')?.addEventListener('click', async () => {
+        const textInp = document.getElementById('instant-user-input')?.value.trim();
+        if (!textInp && !state.instantPhoto) {
+          showToast('Ketik ide Anda atau lampirkan foto terlebih dahulu!');
+          return;
+        }
+
+        playTone(720, 'triangle', 0.1);
+        const spinner = document.getElementById('btn-instant-spinner');
+        const btnText = document.getElementById('btn-instant-text');
+        spinner?.classList.remove('hidden');
+        if (btnText) btnText.textContent = 'Meracik prompt master sinematik...';
+
+        const ar = document.getElementById('instant-select-ar')?.value || '16:9';
+        const mood = document.getElementById('instant-select-mood')?.value || 'cinematic hyper-realistic 8k';
+
+        const res = await generateInstantPrompt(textInp || 'seorang subjek sinematik', state.instantTarget, ar, mood, state.instantPhoto);
+
+        spinner?.classList.add('hidden');
+        if (btnText) btnText.textContent = '✨ Racik Prompt 100% Akurat Sekarang';
+
+        document.getElementById('instant-output-prompt').value = res.mainPromptEn;
+        document.getElementById('instant-output-id').textContent = res.explanationId;
+        document.getElementById('instant-neg-text').textContent = res.negativePrompt;
+        document.getElementById('instant-rec-specs').textContent = res.recommendedSettings;
+        document.getElementById('instant-word-count').textContent = `${res.mainPromptEn.split(/\s+/).filter(Boolean).length} kata`;
+        state._lastInstantResult = res;
+
+        // Visual tag breakdown
+        const tagContainer = document.getElementById('instant-tag-breakdown');
+        if (tagContainer) {
+          tagContainer.innerHTML = `
+            <span class="px-2.5 py-1 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">🎯 Engine: ${state.instantTarget.toUpperCase()}</span>
+            <span class="px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30">📐 Rasio: ${ar}</span>
+            <span class="px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30">💡 Gaya: ${mood.split(' ')[0]}</span>
+            <span class="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">🎬 Status: 100% Akurat</span>
+          `;
+        }
+
+        showToast('Prompt master 100% akurat berhasil diracik!');
+      });
+
+      document.getElementById('btn-copy-instant-main')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('instant-output-prompt')?.value, 'Master Prompt');
+      });
+
+      document.getElementById('btn-copy-instant-neg')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('instant-neg-text')?.textContent, 'Negative Prompt');
+      });
+
+      document.getElementById('btn-instant-to-builder')?.addEventListener('click', () => {
+        const res = state._lastInstantResult;
+        if (res) {
+          if (res.extractedSubject) document.getElementById('input-subject').value = res.extractedSubject;
+          if (res.extractedAction) document.getElementById('input-action').value = res.extractedAction;
+          if (res.extractedEnvironment) document.getElementById('input-environment').value = res.extractedEnvironment;
+        }
+        switchTab('builder');
+        showToast('Adegan dipindahkan ke Builder Studio!');
+      });
+
+      document.getElementById('btn-instant-save')?.addEventListener('click', () => {
+        const text = document.getElementById('instant-output-prompt')?.value.trim();
+        if (!text) return;
+        state.savedPrompts.unshift({
+          title: document.getElementById('instant-user-input')?.value.slice(0, 32) || 'Prompt Instan',
+          model: state.instantTarget.toUpperCase(),
+          prompt: text
+        });
+        document.getElementById('badge-saved-count').textContent = state.savedPrompts.length;
+        showToast('Prompt disimpan ke koleksi!');
+      });
+
+      // Builder Model Buttons
+      document.querySelectorAll('.model-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          playTone(520, 'sine', 0.04);
+          document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('chip-active'));
+          btn.classList.add('chip-active');
+          state.model = btn.dataset.model;
+          document.getElementById('active-model-pill').textContent = MODEL_CONFIGS[state.model].name;
+          document.getElementById('model-tip-box').innerHTML = `<strong class="text-indigo-200">${MODEL_CONFIGS[state.model].name}:</strong> ${MODEL_CONFIGS[state.model].tip}`;
+          updateBuilderPromptUI();
+        });
+      });
+
+      // Builder Modes
+      document.getElementById('mode-t2v')?.addEventListener('click', () => {
+        state.mode = 't2v';
+        document.getElementById('mode-t2v').className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition';
+        document.getElementById('mode-i2v').className = 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition';
+        document.getElementById('i2v-hint-badge')?.classList.add('hidden');
+        updateBuilderPromptUI();
+      });
+
+      document.getElementById('mode-i2v')?.addEventListener('click', () => {
+        state.mode = 'i2v';
+        document.getElementById('mode-i2v').className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white transition';
+        document.getElementById('mode-t2v').className = 'px-3.5 py-1.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition';
+        document.getElementById('i2v-hint-badge')?.classList.remove('hidden');
+        updateBuilderPromptUI();
+      });
+
+      // Micro Motion Chips
+      document.querySelectorAll('.micro-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          playTone(620, 'sine', 0.04);
+          chip.classList.toggle('chip-active');
+          const en = chip.dataset.en;
+          const id = chip.dataset.id;
+          const idx = state.selectedMicroMotions.findIndex(m => m.en === en);
+          if (idx >= 0) {
+            state.selectedMicroMotions.splice(idx, 1);
+          } else {
+            state.selectedMicroMotions.push({ en, id });
+          }
+          updateBuilderPromptUI();
+        });
+      });
+
+      // Builder Surprise & Reset
+      document.getElementById('btn-surprise-me')?.addEventListener('click', () => {
+        const surprises = [
+          { s: 'Pendekar cyberpunk berjaket reflektif', a: 'berjalan menembus hujan malam sambil menoleh ke kamera', e: 'jalanan Tokyo neon penuh genangan air memantulkan cahaya' },
+          { s: 'Seorang penari balet bercahaya neon', a: 'berputar anggun di tengah panggung air tenang', e: 'ruang konser gelap dengan sinar volumetric god rays' },
+          { s: 'Mobil sport klasik merah', a: 'melaju kencang di pesisir tebing saat matahari terbenam', e: 'jalan raya pantai Amalfi dengan deburan ombak laut' }
+        ];
+        const pick = surprises[Math.floor(Math.random() * surprises.length)];
+        document.getElementById('input-subject').value = pick.s;
+        document.getElementById('input-action').value = pick.a;
+        document.getElementById('input-environment').value = pick.e;
+        updateBuilderPromptUI();
+        showToast('Ide acak dimuat!');
+      });
+
+      document.getElementById('btn-reset-all')?.addEventListener('click', () => {
+        document.getElementById('input-subject').value = '';
+        document.getElementById('input-action').value = '';
+        document.getElementById('input-dialogue-quote').value = '';
+        document.getElementById('input-environment').value = '';
+        state.selectedMicroMotions = [];
+        document.querySelectorAll('.micro-chip').forEach(c => c.classList.remove('chip-active'));
+        updateBuilderPromptUI();
+        showToast('Form di-reset');
+      });
+
+      // Language Switcher
+      document.getElementById('lang-en')?.addEventListener('click', () => {
+        state.outputLang = 'en';
+        document.getElementById('lang-en').className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition';
+        document.getElementById('lang-id').className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition';
+        updateBuilderPromptUI();
+      });
+
+      document.getElementById('lang-id')?.addEventListener('click', () => {
+        state.outputLang = 'id';
+        document.getElementById('lang-id').className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition';
+        document.getElementById('lang-en').className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition';
+        updateBuilderPromptUI();
+      });
+
+      // Input changes in Builder
+      ['input-subject', 'input-action', 'input-dialogue-quote', 'input-environment', 'select-time', 'select-weather', 'select-shot', 'select-movement', 'select-lens', 'select-style', 'select-ar', 'select-duration', 'select-speech-tone', 'select-lipsync-mode', 'select-speech-lang'].forEach(id => {
+        const el = document.getElementById(id);
+        el?.addEventListener('input', updateBuilderPromptUI);
+        el?.addEventListener('change', updateBuilderPromptUI);
+      });
+
+      document.querySelectorAll('.btn-quick-dialogue').forEach(b => {
+        b.addEventListener('click', () => {
+          document.getElementById('input-dialogue-quote').value = b.dataset.quote;
+          updateBuilderPromptUI();
+          showToast('Dialog terpasang!');
+        });
+      });
+
+      document.getElementById('btn-clear-dialogue')?.addEventListener('click', () => {
+        document.getElementById('input-dialogue-quote').value = '';
+        updateBuilderPromptUI();
+        showToast('Dialog dikosongkan');
+      });
+
+      document.getElementById('btn-copy-prompt')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('output-prompt')?.value, 'Prompt Utama');
+      });
+
+      document.getElementById('btn-save-prompt')?.addEventListener('click', () => {
+        const text = document.getElementById('output-prompt')?.value.trim();
+        if (!text) return;
+        state.savedPrompts.unshift({
+          title: document.getElementById('input-subject')?.value.slice(0, 32) || 'Prompt Builder',
+          model: MODEL_CONFIGS[state.model].name,
+          prompt: text
+        });
+        document.getElementById('badge-saved-count').textContent = state.savedPrompts.length;
+        showToast('Prompt disimpan ke koleksi!');
+      });
+
+      document.getElementById('btn-add-to-storyboard')?.addEventListener('click', () => {
+        const text = document.getElementById('output-prompt')?.value.trim();
+        if (!text) return;
+        state.storyboard.push({
+          title: document.getElementById('input-subject')?.value.slice(0, 32) || `Scene ${state.storyboard.length + 1}`,
+          ar: document.getElementById('select-ar')?.value || '16:9',
+          duration: document.getElementById('select-duration')?.value || '5s',
+          prompt: text
+        });
+        document.getElementById('badge-storyboard-count').textContent = state.storyboard.length;
+        showToast('Scene ditambahkan ke Storyboard!');
+      });
+
+      document.getElementById('btn-copy-all-storyboard')?.addEventListener('click', () => {
+        if (state.storyboard.length === 0) {
+          showToast('Storyboard kosong');
+          return;
+        }
+        const fullScript = state.storyboard.map((s, idx) => `=== SCENE ${idx + 1}: ${s.title} (${s.ar}, ${s.duration}) ===\n${s.prompt}\n`).join('\n');
+        copyToClipboard(fullScript, 'Seluruh Naskah Storyboard');
+      });
+
+      // Lighting Rig Controls & Sliders
+      document.getElementById('slider-key')?.addEventListener('input', (e) => {
+        state.lighting.keyPower = Number(e.target.value);
+        document.getElementById('val-key-power').textContent = `${state.lighting.keyPower}%`;
+        updateLightingRigUI();
+      });
+
+      document.getElementById('slider-fill')?.addEventListener('input', (e) => {
+        state.lighting.fillPower = Number(e.target.value);
+        document.getElementById('val-fill-power').textContent = `${state.lighting.fillPower}%`;
+        updateLightingRigUI();
+      });
+
+      document.getElementById('slider-rim')?.addEventListener('input', (e) => {
+        state.lighting.rimPower = Number(e.target.value);
+        document.getElementById('val-rim-power').textContent = `${state.lighting.rimPower}%`;
+        updateLightingRigUI();
+      });
+
+      document.getElementById('slider-kelvin')?.addEventListener('input', (e) => {
+        state.lighting.kelvin = Number(e.target.value);
+        document.getElementById('val-kelvin').textContent = `${state.lighting.kelvin}K`;
+        updateLightingRigUI();
+      });
+
+      document.querySelectorAll('.btn-light-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.btn-light-preset').forEach(b => b.classList.remove('chip-active'));
+          btn.classList.add('chip-active');
+          const p = btn.dataset.preset;
+          state.lighting.preset = p;
+
+          if (p === 'rembrandt') {
+            state.lighting.keyPower = 100;
+            state.lighting.fillPower = 40;
+            state.lighting.rimPower = 75;
+            state.lighting.kelvin = 3200;
+          } else if (p === 'cyberpunk') {
+            state.lighting.keyPower = 90;
+            state.lighting.fillPower = 60;
+            state.lighting.rimPower = 100;
+            state.lighting.kelvin = 6500;
+          } else if (p === 'golden') {
+            state.lighting.keyPower = 100;
+            state.lighting.fillPower = 25;
+            state.lighting.rimPower = 90;
+            state.lighting.kelvin = 2800;
+          } else if (p === 'commercial') {
+            state.lighting.keyPower = 85;
+            state.lighting.fillPower = 70;
+            state.lighting.rimPower = 50;
+            state.lighting.kelvin = 5000;
+          }
+
+          document.getElementById('slider-key').value = state.lighting.keyPower;
+          document.getElementById('slider-fill').value = state.lighting.fillPower;
+          document.getElementById('slider-rim').value = state.lighting.rimPower;
+          document.getElementById('slider-kelvin').value = state.lighting.kelvin;
+          document.getElementById('val-key-power').textContent = `${state.lighting.keyPower}%`;
+          document.getElementById('val-fill-power').textContent = `${state.lighting.fillPower}%`;
+          document.getElementById('val-rim-power').textContent = `${state.lighting.rimPower}%`;
+          document.getElementById('val-kelvin').textContent = `${state.lighting.kelvin}K`;
+          updateLightingRigUI();
+          showToast(`Skema lighting "${p.toUpperCase()}" aktif!`);
+        });
+      });
+
+      document.getElementById('btn-copy-lighting-token')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('lighting-output-token')?.textContent, 'Parameter Lighting');
+      });
+
+      document.getElementById('btn-inject-lighting-builder')?.addEventListener('click', () => {
+        const lightingToken = document.getElementById('lighting-output-token')?.textContent.trim();
+        switchTab('builder');
+        const styleSel = document.getElementById('select-style');
+        if (styleSel && lightingToken) {
+          showToast('Tata cahaya 3-titik diintegrasikan ke Builder!');
+        }
+      });
+
+      // Custom Dropdown Helper
+      const setupCustomDropdown = (selId, inpId, cb) => {
+        const sel = document.getElementById(selId);
+        const inp = document.getElementById(inpId);
+        sel?.addEventListener('change', () => {
+          if (sel.value === '__custom__') {
+            inp?.classList.remove('hidden');
+            inp?.focus();
+          } else {
+            inp?.classList.add('hidden');
+          }
+          cb();
+        });
+        inp?.addEventListener('input', cb);
+      };
+
+      setupCustomDropdown('char-gender-age', 'char-gender-age-custom', updateCharacterPromptUI);
+      setupCustomDropdown('char-ethnicity', 'char-ethnicity-custom', updateCharacterPromptUI);
+      setupCustomDropdown('char-body', 'char-body-custom', updateCharacterPromptUI);
+      setupCustomDropdown('char-hair', 'char-hair-custom', updateCharacterPromptUI);
+      setupCustomDropdown('char-eyes', 'char-eyes-custom', updateCharacterPromptUI);
+      setupCustomDropdown('select-remix-pose', 'input-remix-pose-custom', updateRemixPromptUI);
+      setupCustomDropdown('select-remix-bg', 'input-remix-bg-custom', updateRemixPromptUI);
+
+      ['char-name', 'char-archetype', 'char-outfit'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', updateCharacterPromptUI);
+      });
+
+      document.getElementById('btn-char-random')?.addEventListener('click', () => {
+        const chars = [
+          { n: 'Alya — Penjelajah Antariksa', a: 'seorang astronot penjelajah muda', o: 'setelan antariksa putih matte bergaris oranye neon' },
+          { n: 'Raka — Detektif Cyberpunk', a: 'seorang detektif siber jalanan', o: 'mantel kulit hitam dengan kerah bercahaya sian' },
+          { n: 'Kenji — Master Samurai Modern', a: 'seorang pendekar samurai ronin', o: 'kimono hitam taktis modern dengan sarung katana karbon' }
+        ];
+        const pick = chars[Math.floor(Math.random() * chars.length)];
+        document.getElementById('char-name').value = pick.n;
+        document.getElementById('char-archetype').value = pick.a;
+        document.getElementById('char-outfit').value = pick.o;
+        updateCharacterPromptUI();
+        showToast('Karakter acak dimuat!');
+      });
+
+      document.getElementById('btn-copy-char-dna')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('char-dna-output')?.textContent, 'Character DNA');
+      });
+
+      document.getElementById('btn-save-char-vault')?.addEventListener('click', () => {
+        const dna = document.getElementById('char-dna-output')?.textContent;
+        const name = document.getElementById('char-name')?.value || 'Karakter';
+        if (!dna) return;
+        state.characters.push({ name, dna });
+        document.getElementById('badge-character-count').textContent = state.characters.length + 2;
+        showToast(`Karakter "${name}" disimpan ke katalog!`);
+      });
+
+      document.getElementById('btn-use-char-in-builder')?.addEventListener('click', () => {
+        document.getElementById('input-subject').value = document.getElementById('char-dna-output')?.textContent || '';
+        switchTab('builder');
+        showToast('Karakter dimuat ke Builder!');
+      });
+
+      // Remix Foto Dropzone
+      const remixFileInput = document.getElementById('remix-photo-file');
+      const handleRemixFile = (file) => {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          state.remixPhoto = ev.target.result;
+          const img = document.getElementById('remix-photo-preview');
+          const ph = document.getElementById('remix-photo-placeholder');
+          if (img) {
+            img.src = state.remixPhoto;
+            img.classList.remove('hidden');
+          }
+          ph?.classList.add('hidden');
+          updateRemixPromptUI();
+          showToast('Foto acuan berhasil diunggah!');
+        };
+        reader.readAsDataURL(file);
+      };
+
+      remixFileInput?.addEventListener('change', (e) => handleRemixFile(e.target.files?.[0]));
+
+      const dropzone = document.getElementById('remix-dropzone');
+      dropzone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-pink-500');
+      });
+      dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('border-pink-500'));
+      dropzone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-pink-500');
+        handleRemixFile(e.dataTransfer.files?.[0]);
+      });
+
+      document.getElementById('btn-remix-auto-ai')?.addEventListener('click', () => {
+        document.getElementById('select-remix-pose').value = "sitting comfortably at a sleek podcast desk in front of a microphone|duduk di meja podcast profesional di depan microphone";
+        document.getElementById('select-remix-bg').value = "modern podcast studio with acoustic wood slat walls, RGB neon accents, and broadcast equipment|studio podcast modern dengan dinding kayu akustik dan neon RGB";
+        document.getElementById('input-remix-pose-custom')?.classList.add('hidden');
+        document.getElementById('input-remix-bg-custom')?.classList.add('hidden');
+        updateRemixPromptUI();
+        showToast('Preset Studio Podcast diterapkan!');
+      });
+
+      document.getElementById('btn-copy-remix-prompt')?.addEventListener('click', () => {
+        copyToClipboard(document.getElementById('remix-output-prompt')?.value, 'Prompt Remix Foto');
+      });
+
+      document.getElementById('btn-remix-to-builder')?.addEventListener('click', () => {
+        document.getElementById('input-subject').value = 'Subject from reference image, sitting at a professional podcast desk';
+        document.getElementById('input-environment').value = 'Modern podcast studio with acoustic wooden slats and neon accents';
+        switchTab('builder');
+        showToast('Pengaturan remix dipindahkan ke Builder!');
+      });
+
+      // Initial compilation
+      switchTab('instant');
+      updateBuilderPromptUI();
+      updateCharacterPromptUI();
+      updateRemixPromptUI();
+      updateLightingRigUI();
+    });
+  </script>
+</body>
+</html>
